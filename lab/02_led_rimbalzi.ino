@@ -1,3 +1,4 @@
+#include <Arduino.h>
 
 #define LED_1 13
 #define LED_2 12
