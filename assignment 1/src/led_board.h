@@ -19,8 +19,10 @@ void turn_off_pattern();
 
 void reset_pulsing();
 void go_on_pulsing();
+void turn_on_leds();
+void turn_on_led(int i);
 
-/* for testing */ 
+/* for testing */
 void test_led_board();
 
 #endif

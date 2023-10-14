@@ -14,7 +14,9 @@
 
 void init_player_console();
 
-void print_on_console(const String& msg);
+void button_handler( int i);
+
+void print_on_console(const String &msg);
 
 /* read the difficulty level */
 int read_difficulty_level();
