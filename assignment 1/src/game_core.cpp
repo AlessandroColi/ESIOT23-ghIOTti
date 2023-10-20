@@ -72,7 +72,7 @@ void game_wait_to_start(){
   if (current_time_in_state < MAX_IDLE_TIME){
     go_on_pulsing();
     check_difficulty_level();
-    if (player_input_started()){
+    if (b1_pressed()){
       change_game_state(GAME_INIT);
     }
   } else {
@@ -174,6 +174,10 @@ void game_over(){
   {
       change_game_state(GAME_INTRO);
   }
+}
+
+int getState(){
+  return game_state;
 }
 
 void game_sleep(){

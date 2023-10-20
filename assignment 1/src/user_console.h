@@ -18,11 +18,10 @@ void button_handler( int i);
 
 void print_on_console(const String &msg);
 
+bool b1_pressed();
+
 /* read the difficulty level */
 int read_difficulty_level();
-
-/* check if the player started the game */
-bool player_input_started();
 
 /* reset the input, at each interation */
 void reset_player_input();

@@ -9,6 +9,7 @@ void setup() {
   init_player_console();
   init_led_board();
   change_game_state(GAME_INTRO);
+  randomSeed(analogRead(POT_PIN)); //use the potentiometer value to generate the seed for better random values
 }
 
 void loop(){ 

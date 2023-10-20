@@ -1,6 +1,7 @@
 #include "Arduino.h"
 #include "config.h"
 #include "led_board.h"
+#include "game_core.h"
 
 #include <EnableInterrupt.h>
 
@@ -22,7 +23,6 @@ void button_handler_3(){ button_handler(3); }
 
 uint8_t inputPattern[NUM_INPUT_POS];
 int recived = 0;
-bool input_stared = false;
 
 void (*button_handlers[4])() = {button_handler_0, button_handler_1, button_handler_2, button_handler_3};
 
@@ -34,11 +34,12 @@ void button_handler(int i){
     int status = digitalRead(inputPins[i]);
     if (status == HIGH && !wasAlreadyPressed[i])
     {
-      input_stared = true;
-      turn_on_led(i);
       wasAlreadyPressed[i] = true;
-      inputPattern[recived] = i;
-      recived++;
+      if (getState() == GAME_LOOP_WAITING_PLAYER_PATTERN){
+        turn_on_led(i);
+        inputPattern[recived] = i;
+        recived++;
+      }
     }
   }
 }
@@ -78,17 +79,16 @@ void reset_player_input(){
     lastButtonPressedTimeStamps[i] = ts;    
     wasAlreadyPressed[i] = false;
   }
-  input_stared = false;
   recived = 0;
   delay(BOUNCING_TIME);
-  print_on_console("input reset");
 }
 
-bool player_input_started(){
-  return input_stared;
+bool b1_pressed(){
+  return wasAlreadyPressed[0];
 }
 
-void test_player_input(){
+void  test_player_input()
+{
   for (int i = 0; i < NUM_INPUT_POS; i++) {
     if (inputPattern[i]) {
       Serial.println(String("button ") + i + " pressed"); 
