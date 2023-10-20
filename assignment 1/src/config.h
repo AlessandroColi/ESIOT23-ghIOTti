@@ -15,10 +15,10 @@
 
 #define NUM_INPUT_POS NLEDS
 
-#define BUT01_PIN 2
-#define BUT02_PIN 3
-#define BUT03_PIN 4
-#define BUT04_PIN 5
+#define BUT01_PIN 5
+#define BUT02_PIN 4
+#define BUT03_PIN 3
+#define BUT04_PIN 2
 
 #define POT_PIN A0
 
