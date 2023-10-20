@@ -5,6 +5,16 @@
 #include "user_console.h" 
 #include "led_board.h"
 
+/*this assignments has been done as a group by:
+ Coli Alessandro: alessandro.coli2@studio.unibo.it
+ Giangiulli Chiara: chiara.giangiulli@studio.unibo.it
+ Pisoni Giovanni: giovanni.pisoni@studio.unibo.it
+ Terenzi Mirco: mirco.terenzi@studio.unibo.it
+ 
+ Link for the demonstration video: 
+ https://liveunibo-my.sharepoint.com/:f:/g/personal/giovanni_pisoni_studio_unibo_it/ErnLzV7NiVJJmyPk6DCJzkkB3Ns6Jg9OxxFI11XQjZMZQw?e=BbwlHq
+ */
+
 void setup() {
   init_player_console();
   init_led_board();
