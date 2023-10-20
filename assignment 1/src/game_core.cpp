@@ -161,7 +161,6 @@ void game_loop_wait_player_pattern(){
         time_to_display_pattern -= difficulty_scaling_factor*20;
         if( time_to_display_pattern < MIN_TIME_DISPLAY ) difficulty_scaling_factor=MIN_TIME_DISPLAY; // put a lower limit 
         max_time_to_form_pattern /= difficulty_scaling_factor;
-        if (max_time_to_form_pattern < T3_MIN_TIME) max_time_to_form_pattern = T3_MIN_TIME;
         print_on_console(String("New Point! Score ") + score);
         turn_off_pattern();
         initPattern();

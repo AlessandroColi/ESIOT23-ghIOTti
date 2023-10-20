@@ -30,7 +30,6 @@
 #define MAX_TIME_DISPLAY 3000    //max time to display pattern
 #define MIN_TIME_DISPLAY 700 
 #define T3_TIME 5000    //max time to form pattern
-#define T3_MIN_TIME 1000    // lower limit time to form pattern
 #define INITIAL_WAIT 5000 // time given at the start to choose the difficulty
 
 // game states
