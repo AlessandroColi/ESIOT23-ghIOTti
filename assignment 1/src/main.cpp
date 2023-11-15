@@ -22,11 +22,9 @@ void setup() {
   randomSeed(analogRead(POT_PIN)); //use the potentiometer value to generate the seed for better random values
 }
 
-void loop(){ 
+void loop() { 
   update_game_state_time();
-
-    switch (game_state)
-    {
+  switch (game_state) {
     case GAME_INTRO:
       game_intro();
       break;
@@ -51,5 +49,5 @@ void loop(){
     case GAME_SLEEP:
       game_sleep();
       break;
-    }
+  }
 }
