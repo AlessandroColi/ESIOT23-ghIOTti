@@ -18,17 +18,6 @@
 #define LCD_SDA_PIN A0
 #define LCD_SCL_PIN A0
 
-// states
-
-#define WAITING_FOR_CAR 1
-#define CAR_DETECTED_FOR_CHECK_IN 2
-#define ENTERING_WASHING_AREA 3
-#define READY_TO_WASH 4
-#define WASHING 5
-#define LEAVING_WASHING_AREA 6
-#define CHECK_OUT 7
-#define MAINTENANCE 8
-
 
 //times and limit values
 #define N1 0 //from detected to gate open
