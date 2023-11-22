@@ -1,5 +1,5 @@
-#ifndef __BLINK_TASK__
-#define __BLINK_TASK__
+#ifndef __BLINKING_TASK__
+#define __BLINKING_TASK__
 
 #include "Task.h"
 #include "devices/Led.h"
