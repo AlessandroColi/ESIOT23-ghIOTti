@@ -27,7 +27,7 @@
 #define WASHING 5
 #define LEAVING_WASHING_AREA 6
 #define CHECK_OUT 7
-#define MAINTENENCE 8
+#define MAINTENANCE 8
 
 
 //times and limit values
