@@ -23,7 +23,7 @@ class GateControlTask: public Task {
   void CloseGate(long timeRequired, float distanceRequired, int nextState);
 
 public:
-  GateControlTask(CarWasher* pCarWasheR);
+  GateControlTask(CarWasher* pCarWasher);
   void tick();
 
 };
