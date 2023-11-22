@@ -1,12 +1,22 @@
-#include "Button.h"
+#ifndef __BUTTON__
+#define __BUTTON__
 
-Button::Button(){
-} 
-  
-void Button::updateSyncTime(long time){
-	lastTimeSync = time;
-}
+class Button {
+ 
+public:
+  Button();
+  virtual bool isPressed() = 0;
+  virtual bool isClicked() = 0;
 
-long Button::getLastSyncTime(){
-	return lastTimeSync;
-}
+  virtual void sync();
+  long getLastSyncTime();
+
+protected: 
+  void updateSyncTime(long time);
+
+private:
+  long lastTimeSync;
+
+};
+
+#endif
