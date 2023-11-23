@@ -1,19 +1,25 @@
-#ifndef __TEMP_CONTROL_TASK__
-#define __TEMP_CONTROL_TASK__
+#ifndef __WASH_CONTROL_TASK__
+#define __WASH_CONTROL_TASK__
 
 #include "Task.h"
 #include "devices/TempSensorImpl.h"
 #include "model/CarWasher.h"
+#include "devices/ButtonImpl.h"
 
-class TempControlTask: public Task {
+class WashControlTask: public Task {
   CarWasher* pCarWasher;
   TempSensorLM35* pTempSensor;
+  ButtonImpl* pButton;
+  long washingStartTime;
+  long washingTimeElapsed;
   long tempHighStartTime;
 
-  enum { NORMAL, TEMP_HIGH } state;
+  void StopWashing();
+  void StartWashing();
+  enum { WAITING, WASHING, TEMP_HIGH, MAINTENACE } state;
 
 public:
-  TempControlTask(CarWasher* pCarWasher);
+  WashControlTask(CarWasher* pCarWasher);
   void tick();
 };
 
