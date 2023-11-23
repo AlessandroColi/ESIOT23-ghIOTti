@@ -4,58 +4,60 @@
 GateControlTask::GateControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTEMP);
-    SetState(WAITING_ENTER);
+    state = CLOSE;
 }
   
 void GateControlTask::tick(){
-    switch (state)
-    {
-    case WAITING_ENTER:
-        if (pCarWasher->isCarDetectedForCheckInState()) {
-            OpenGate(ENTERING);
+    switch (state) {
+    case CLOSE:
+        if (pCarWasher->isEnteringWashingAreaState() || pCarWasher->isLeavingWashingAreaState()) {
+            OpenGate();
+        }        
+        break;
+    
+    case OPEN:
+        if ((pCarWasher->isEnteringWashingAreaState() && pSonar->getDistance() <= MINDIST)
+                || (pCarWasher->isLeavingWashingAreaState() && pSonar->getDistance() >= MAXDIST)) {
+            state = WAITING_TO_CLOSE;
+            atRightDistTime = millis();
         }
         break;
-    
-    case ENTERING:
-        CloseGate(N2, MINDIST, WAITING_EXIT);
-        break;
-    
-    case WAITING_EXIT:
+
+    case WAITING_TO_CLOSE:
+        if (pCarWasher->isEnteringWashingAreaState()) {
+            if (pSonar->getDistance() > MINDIST) {
+                state = OPEN;
+            }
+            else if (CheckTimeElapsed(N2)) {
+                pCarWasher->setReadyToWashState();
+                CloseGate();
+            }
+        }
         if (pCarWasher->isLeavingWashingAreaState()) {
-            OpenGate(EXITING);
+            if (pSonar->getDistance() < MAXDIST) {
+                state = OPEN;
+            }
+            else if (CheckTimeElapsed(N4)) {
+                pCarWasher->setCheckOutState();
+                CloseGate();
+            }
         }
-        break;
-
-    case EXITING:
-        CloseGate(N4, MAXDIST, WAITING_ENTER);
         break;
     }
 }
 
-void GateControlTask::SetState(int s) {
-    state = s;
-    enteringStateTime = millis();
+bool GateControlTask::CheckTimeElapsed(long timeRequired) {
+    return (millis() - atRightDistTime) >= timeRequired;
 }
 
-long GateControlTask::ElapsedTimeInState() {
-    return millis() - enteringStateTime;
-}
-
-void GateControlTask::OpenGate(int nextState) {
+void GateControlTask::OpenGate() {
     pServoMotor->on();
-    pServoMotor->setPosition(OPEN);
-    SetState(nextState);
+    pServoMotor->setPosition(OPEN_POS);
+    state = OPEN;
 }
 
-void GateControlTask::CloseGate(long timeRequired, float distanceRequired, int nextState) {
-    if (pSonar->getDistance() <= distanceRequired) {
-        if (elapsedTime >= timeRequired) {
-            pServoMotor->setPosition(CLOSE);
-            pServoMotor->off();
-            SetState(nextState);
-        }
-    }
-    else {
-        elapsedTime = 0;
-    }
+bool GateControlTask::CloseGate() {
+    pServoMotor->setPosition(CLOSE_POS);
+    pServoMotor->off();
+    state = CLOSE;
 }

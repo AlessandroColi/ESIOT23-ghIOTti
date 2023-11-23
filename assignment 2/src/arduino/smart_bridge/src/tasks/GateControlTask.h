@@ -1,8 +1,8 @@
 #ifndef __GATE_CONTROL_TASK__
 #define __GATE_CONTROL_TASK__
 
-#define OPEN 180
-#define CLOSE 0
+#define OPEN_POS 180
+#define CLOSE_POS 0
 
 #include "Task.h"
 #include "model/CarWasher.h"
@@ -13,14 +13,12 @@ class GateControlTask: public Task {
   Sonar* pSonar;
   ServoMotorImpl* pServoMotor;
   
-  long enteringStateTime;
-  long elapsedTime;
-  enum { WAITING_ENTER, ENTERING, WAITING_EXIT, EXITING } state;
+  long atRightDistTime;
+  enum { OPEN, CLOSE, WAITING_TO_CLOSE } state;
 
-  void SetState(int state);
-  long ElapsedTimeInState();
-  void OpenGate(int nextState);
-  void CloseGate(long timeRequired, float distanceRequired, int nextState);
+  bool CheckTimeElapsed(long timeRequired);
+  void OpenGate();
+  bool CloseGate();
 
 public:
   GateControlTask(CarWasher* pCarWasher);
