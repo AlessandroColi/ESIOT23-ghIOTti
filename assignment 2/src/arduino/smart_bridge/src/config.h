@@ -4,8 +4,8 @@
 // leds
 
 #define LED01_PIN 0
-#define LED02_PIN 0
-#define LED03_PIN 0
+#define LED02_PIN 1
+#define LED03_PIN 2
 
 // sensors and buttons
 
@@ -26,7 +26,7 @@
 #define N4 0 //time that the car is in the correct position for check out
 
 #define MAXTEMP 0 
-
+#define MAXTIME 10000
 #define MINDIST 0
 #define MAXDIST 0
 
