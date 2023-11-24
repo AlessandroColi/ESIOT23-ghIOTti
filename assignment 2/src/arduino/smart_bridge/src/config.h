@@ -6,6 +6,8 @@
 #define LED01_PIN 0
 #define LED02_PIN 1
 #define LED03_PIN 2
+#define BLINK_INT1 0.1
+#define BLINK_INT2 0.5
 
 // sensors and buttons
 

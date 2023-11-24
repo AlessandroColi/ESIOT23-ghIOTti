@@ -1,40 +1,47 @@
 #include "GateControlTask.h"
 #include "config.h"
 
-GateControlTask::GateControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
-    pServoMotor = new ServoMotorImpl(MOTOR_PIN);
-    pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTEMP);
+GateControlTask::GateControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask):
+        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
     state = CLOSE;
 }
   
 void GateControlTask::tick(){
     switch (state) {
     case CLOSE:
-        if (pCarWasher->isEnteringWashingAreaState() || pCarWasher->isLeavingWashingAreaState()) {
+        if (pCarWasher->isEnteringWashingAreaState()) {
             OpenGate();
-        }        
+        }
+        if (pCarWasher->isLeavingWashingAreaState()) {
+            pBlinkingTask->setPeriod(BLINK_INT1);
+            pBlinkingTask->setActive(true);
+            OpenGate();
+        }
         break;
     
     case OPEN:
-        if ((pCarWasher->isEnteringWashingAreaState() && pSonar->getDistance() <= MINDIST)
-                || (pCarWasher->isLeavingWashingAreaState() && pSonar->getDistance() >= MAXDIST)) {
+        pCarWasher->sampleDistance();
+        if ((pCarWasher->isEnteringWashingAreaState() && pCarWasher->getCurrentDistance() <= MINDIST)
+                || (pCarWasher->isLeavingWashingAreaState() && pCarWasher->getCurrentDistance() >= MAXDIST)) {
             state = WAITING_TO_CLOSE;
             atRightDistTime = millis();
         }
         break;
 
     case WAITING_TO_CLOSE:
+        pCarWasher->sampleDistance();
         if (pCarWasher->isEnteringWashingAreaState()) {
-            if (pSonar->getDistance() > MINDIST) {
+            if (pCarWasher->getCurrentDistance() > MINDIST) {
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N2)) {
+                pBlinkingTask->setActive(false);
                 pCarWasher->setReadyToWashState();
                 CloseGate();
             }
         }
         if (pCarWasher->isLeavingWashingAreaState()) {
-            if (pSonar->getDistance() < MAXDIST) {
+            if (pCarWasher->getCurrentDistance() < MAXDIST) {
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N4)) {

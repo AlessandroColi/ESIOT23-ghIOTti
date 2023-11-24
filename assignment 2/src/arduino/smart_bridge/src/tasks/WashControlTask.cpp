@@ -2,8 +2,8 @@
 
 #include "config.h"
 
-WashControlTask::WashControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
-    pTempSensor = new TempSensorLM35(TEMP_PIN);
+WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask): 
+        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
     pButton = new ButtonImpl(START_BTN);
     state = WAITING;
 }
@@ -15,10 +15,13 @@ void WashControlTask::tick(){
                 StartWashing();
                 washingTimeElapsed = 0;
                 pCarWasher->setWashingState();
+                pBlinkingTask->setPeriod(BLINK_INT2);
+                pBlinkingTask->setActive(true);
             }
             break;
         case WASHING:
-            if (pTempSensor->getTemperature() >= MAXTEMP) {
+            pCarWasher->sampleTemperature();
+            if (pCarWasher->getCurrentTemperature() >= MAXTEMP) {
                 state = TEMP_HIGH;
                 tempHighStartTime = millis();
                 StopWashing();
@@ -26,11 +29,13 @@ void WashControlTask::tick(){
             if (washingTimeElapsed >= N3) {
                 state = WAITING;
                 pCarWasher->setLeavingWashingAreaState();
+                pBlinkingTask->setActive(false);
             }
             break;
     
         case TEMP_HIGH:
-            if (pTempSensor->getTemperature() < MAXTEMP) {
+            pCarWasher->sampleTemperature();
+            if (pCarWasher->getCurrentTemperature() < MAXTEMP) {
                 StartWashing();
             }
             else if ((millis() - tempHighStartTime) >= N4) {

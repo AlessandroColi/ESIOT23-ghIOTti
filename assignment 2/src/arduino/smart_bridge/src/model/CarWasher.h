@@ -7,6 +7,7 @@
 #include "devices/Sonar.h"
 #include "devices/ServoMotor.h"
 #include "devices/Button.h"
+#include "devices/TempSensorImpl.h"
 
 class CarWasher {
     

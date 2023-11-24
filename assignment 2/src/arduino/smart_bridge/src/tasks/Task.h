@@ -6,9 +6,14 @@
 class Task {
     
 public:
-  virtual void init(int period){
-    this->period = period;  
+  virtual void init(int period, bool active) {
+    this->period = period;
+    this->active = active;
     timeElapsed = 0;
+  }
+
+  virtual void init(int period) {
+    this->init(period, true);
   }
 
   virtual void tick() = 0;
@@ -27,9 +32,18 @@ public:
     this->period = period;
   }
 
+  bool isActive() {
+    return active;
+  }
+
+  void setActive(bool active) {
+    this->active = active;
+  }
+
 protected:
   int period;
   int timeElapsed;
+  bool active;
 };
 
 #endif
