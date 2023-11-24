@@ -19,14 +19,7 @@ void CarWasher::init(){
     pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTIME);
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pTempSensor = new TempSensorLM35(TEMP_PIN);
-
-    //servono?
-    light01On = false;
-    light02On = false;
-    light03On = false;
-
     detPresence = false;
-
     setWaitingForCarState();
 }
     
@@ -37,40 +30,8 @@ double CarWasher::getCurrentTemperature(){
     return temperature;
 }
 
-bool CarWasher::isLightOn(int pin){
-    switch(pin){
-        case LED01_PIN: return light01On;
-        case LED02_PIN: return light02On;
-        case LED03_PIN: return light03On;
-        //default?
-    }
-}
 bool CarWasher::detectedPresence(){
     return this->detPresence;
-}
-
-void CarWasher::turnLightOn(int pin){
-    switch(pin){
-        case LED01_PIN: led01->switchOn();
-                        break;
-        case LED02_PIN: led02->switchOn();
-                        break;
-        case LED03_PIN: led03->switchOn();
-                        break;
-        //default?
-    }
-    
-}
-void CarWasher::turnLightOff(int pin){
-    switch(pin){
-        case LED01_PIN: led01->switchOff();
-                        break;
-        case LED02_PIN: led02->switchOff();
-                        break;
-        case LED03_PIN: led03->switchOff();
-                        break;
-        //default?
-    }
 }
 
 bool CarWasher::isWaitingForCarState(){
@@ -103,24 +64,38 @@ void CarWasher::setWaitingForCarState(){
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
+    led01->switchOn();
+    //lcd: welcome
 }
 void CarWasher::setEnteringWashingAreaState(){
     state = ENTERING_WASHING_AREA;
+    led01->switchOff();
+    led02->switchOn();
+    //lcd: proced to the washing area
 }
 void CarWasher::setReadyToWashState(){
     state = READY_TO_WASH;
+    led02->switchOff();
+    //lcd: ready to wash
 }
 void CarWasher::setWashingState(){
     state = WASHING;
+    led02->switchOn();
+    //lcd: [progressbar]
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
+    led02->switchOff();
+    led03->switchOn();
+    //lcd: washing complete, you can leave the area
 }
 void CarWasher::setCheckOutState(){
     state = CHECK_OUT;
+    led03->switchOff();
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
+    //lcd: detected a problem - please wait
 }
 
 void CarWasher::samplePresence(){

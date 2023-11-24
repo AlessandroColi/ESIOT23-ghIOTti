@@ -17,12 +17,7 @@ class CarWasher {
         
         double getCurrentDistance();
         double getCurrentTemperature();
-
-        bool isLightOn(int pin);
         bool detectedPresence();
-
-        void turnLightOn(int pin);
-        void turnLightOff(int pin);
 
         bool isWaitingForCarState();
         bool isCarDetectedForCheckInState();
@@ -49,12 +44,8 @@ class CarWasher {
         void test();
 
     private:
-
         double distance;
         double temperature;
-        bool light01On;
-        bool light02On;
-        bool light03On;
         bool detPresence;
         
         enum { WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, READY_TO_WASH, 
