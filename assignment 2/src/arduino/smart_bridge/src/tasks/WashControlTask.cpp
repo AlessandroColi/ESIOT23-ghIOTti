@@ -3,7 +3,6 @@
 #include "config.h"
 
 WashControlTask::WashControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
-    pTempSensor = new TempSensorLM35(TEMP_PIN);
     pButton = new ButtonImpl(START_BTN);
     state = WAITING;
 }
@@ -18,7 +17,8 @@ void WashControlTask::tick(){
             }
             break;
         case WASHING:
-            if (pTempSensor->getTemperature() >= MAXTEMP) {
+            pCarWasher->sampleTemperature();
+            if (pCarWasher->getCurrentTemperature() >= MAXTEMP) {
                 state = TEMP_HIGH;
                 tempHighStartTime = millis();
                 StopWashing();
@@ -30,7 +30,8 @@ void WashControlTask::tick(){
             break;
     
         case TEMP_HIGH:
-            if (pTempSensor->getTemperature() < MAXTEMP) {
+            pCarWasher->sampleTemperature();
+            if (pCarWasher->getCurrentTemperature() < MAXTEMP) {
                 StartWashing();
             }
             else if ((millis() - tempHighStartTime) >= N4) {

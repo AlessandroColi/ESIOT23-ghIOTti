@@ -7,7 +7,6 @@
 
 class DetectionTask: public Task {
   CarWasher* pCarWasher;
-  Pir* pPir;
 
 public:
   DetectionTask(CarWasher* pCarWasher);

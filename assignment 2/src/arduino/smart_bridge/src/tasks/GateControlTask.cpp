@@ -2,8 +2,6 @@
 #include "config.h"
 
 GateControlTask::GateControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
-    pServoMotor = new ServoMotorImpl(MOTOR_PIN);
-    pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTEMP);
     state = CLOSE;
 }
   
@@ -16,16 +14,18 @@ void GateControlTask::tick(){
         break;
     
     case OPEN:
-        if ((pCarWasher->isEnteringWashingAreaState() && pSonar->getDistance() <= MINDIST)
-                || (pCarWasher->isLeavingWashingAreaState() && pSonar->getDistance() >= MAXDIST)) {
+        pCarWasher->sampleDistance();
+        if ((pCarWasher->isEnteringWashingAreaState() && pCarWasher->getCurrentDistance() <= MINDIST)
+                || (pCarWasher->isLeavingWashingAreaState() && pCarWasher->getCurrentDistance() >= MAXDIST)) {
             state = WAITING_TO_CLOSE;
             atRightDistTime = millis();
         }
         break;
 
     case WAITING_TO_CLOSE:
+        pCarWasher->sampleDistance();
         if (pCarWasher->isEnteringWashingAreaState()) {
-            if (pSonar->getDistance() > MINDIST) {
+            if (pCarWasher->getCurrentDistance() > MINDIST) {
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N2)) {
@@ -34,7 +34,7 @@ void GateControlTask::tick(){
             }
         }
         if (pCarWasher->isLeavingWashingAreaState()) {
-            if (pSonar->getDistance() < MAXDIST) {
+            if (pCarWasher->getCurrentDistance() < MAXDIST) {
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N4)) {

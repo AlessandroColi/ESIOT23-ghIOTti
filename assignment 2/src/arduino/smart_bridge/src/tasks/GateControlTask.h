@@ -10,7 +10,6 @@
 
 class GateControlTask: public Task {
   CarWasher* pCarWasher;
-  Sonar* pSonar;
   ServoMotorImpl* pServoMotor;
   
   long atRightDistTime;

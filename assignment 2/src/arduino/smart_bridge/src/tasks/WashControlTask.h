@@ -8,7 +8,6 @@
 
 class WashControlTask: public Task {
   CarWasher* pCarWasher;
-  TempSensorLM35* pTempSensor;
   ButtonImpl* pButton;
   long washingStartTime;
   long washingTimeElapsed;
