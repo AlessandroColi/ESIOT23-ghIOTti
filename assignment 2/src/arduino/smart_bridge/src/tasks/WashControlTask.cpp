@@ -2,7 +2,8 @@
 
 #include "config.h"
 
-WashControlTask::WashControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
+WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask): 
+        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
     pButton = new ButtonImpl(START_BTN);
     state = WAITING;
 }
@@ -14,6 +15,8 @@ void WashControlTask::tick(){
                 StartWashing();
                 washingTimeElapsed = 0;
                 pCarWasher->setWashingState();
+                pBlinkingTask->setPeriod(BLINK_INT2);
+                pBlinkingTask->setActive(true);
             }
             break;
         case WASHING:
@@ -26,6 +29,7 @@ void WashControlTask::tick(){
             if (washingTimeElapsed >= N3) {
                 state = WAITING;
                 pCarWasher->setLeavingWashingAreaState();
+                pBlinkingTask->setActive(false);
             }
             break;
     

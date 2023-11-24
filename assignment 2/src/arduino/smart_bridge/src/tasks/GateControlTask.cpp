@@ -1,16 +1,22 @@
 #include "GateControlTask.h"
 #include "config.h"
 
-GateControlTask::GateControlTask(CarWasher* pCarWasher): pCarWasher(pCarWasher) {
+GateControlTask::GateControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask):
+        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
     state = CLOSE;
 }
   
 void GateControlTask::tick(){
     switch (state) {
     case CLOSE:
-        if (pCarWasher->isEnteringWashingAreaState() || pCarWasher->isLeavingWashingAreaState()) {
+        if (pCarWasher->isEnteringWashingAreaState()) {
             OpenGate();
-        }        
+        }
+        if (pCarWasher->isLeavingWashingAreaState()) {
+            pBlinkingTask->setPeriod(BLINK_INT1);
+            pBlinkingTask->setActive(true);
+            OpenGate();
+        }
         break;
     
     case OPEN:
@@ -29,6 +35,7 @@ void GateControlTask::tick(){
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N2)) {
+                pBlinkingTask->setActive(false);
                 pCarWasher->setReadyToWashState();
                 CloseGate();
             }

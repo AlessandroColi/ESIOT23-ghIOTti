@@ -7,10 +7,12 @@
 #include "Task.h"
 #include "model/CarWasher.h"
 #include "devices/ServoMotorImpl.h"
+#include "BlinkingTask.h"
 
 class GateControlTask: public Task {
   CarWasher* pCarWasher;
   ServoMotorImpl* pServoMotor;
+  BlinkingTask* pBlinkingTask;
   
   long atRightDistTime;
   enum { OPEN, CLOSE, WAITING_TO_CLOSE } state;
@@ -20,7 +22,7 @@ class GateControlTask: public Task {
   bool CloseGate();
 
 public:
-  GateControlTask(CarWasher* pCarWasher);
+  GateControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask);
   void tick();
 
 };
