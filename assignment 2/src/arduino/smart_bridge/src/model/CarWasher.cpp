@@ -2,6 +2,7 @@
 #include "config.h"
 #include "devices/ButtonImpl.h"
 #include "devices/Led.h"
+#include "devices/Lcd.h"
 #include "devices/Pir.h"
 #include "devices/Sonar.h"
 #include "devices/ServoMotorImpl.h"
@@ -15,6 +16,7 @@ void CarWasher::init(){
     led01 = new Led(LED01_PIN);
     led02 = new Led(LED02_PIN);
     led03 = new Led(LED03_PIN);
+    lcd = new Lcd(); //task?
     pPir = new Pir(PIR_PIN);
     pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTIME);
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
@@ -65,37 +67,37 @@ void CarWasher::setWaitingForCarState(){
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
     led01->switchOn();
-    //lcd: welcome
+    this->printOnLcd("Welcome");
 }
 void CarWasher::setEnteringWashingAreaState(){
     state = ENTERING_WASHING_AREA;
     led01->switchOff();
     led02->switchOn();
-    //lcd: proced to the washing area
+    this->printOnLcd("Proceed to the washing area");
 }
 void CarWasher::setReadyToWashState(){
     state = READY_TO_WASH;
     led02->switchOff();
-    //lcd: ready to wash
+    this->printOnLcd("Ready to wash"); 
 }
 void CarWasher::setWashingState(){
     state = WASHING;
     led02->switchOn();
-    //lcd: [progressbar]
+    this->printOnLcd("[progressbar]"); //TODO
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
     led02->switchOff();
     led03->switchOn();
-    //lcd: washing complete, you can leave the area
 }
 void CarWasher::setCheckOutState(){
     state = CHECK_OUT;
     led03->switchOff();
+    this->printOnLcd("Washing complete, you can leave the area");
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
-    //lcd: detected a problem - please wait
+    this->printOnLcd("Detected a problem - please wait");
 }
 
 void CarWasher::samplePresence(){
@@ -117,6 +119,19 @@ void CarWasher::sampleDistance(){
 }
 void CarWasher::sampleTemperature(){
     this->temperature = pTempSensor->getTemperature();
+}
+
+void CarWasher::printOnLcd(String text){
+    lcd->clearDisplay();
+    lcd->setCursor(0, 0);
+    lcd->printText(text);
+}
+
+void CarWasher::displayCountdown(int seconds){
+    lcd->clearDisplay();
+    lcd->setCursor(0, 0);
+    lcd->printText("Time left:");
+    lcd->progressBar(seconds);
 }
 
 void CarWasher::servoOn(){
