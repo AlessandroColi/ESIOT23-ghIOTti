@@ -6,12 +6,10 @@
 
 #include "Task.h"
 #include "model/CarWasher.h"
-#include "devices/ServoMotorImpl.h"
 #include "BlinkingTask.h"
 
 class GateControlTask: public Task {
   CarWasher* pCarWasher;
-  ServoMotorImpl* pServoMotor;
   BlinkingTask* pBlinkingTask;
   
   long atRightDistTime;

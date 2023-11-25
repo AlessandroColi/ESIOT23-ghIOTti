@@ -58,13 +58,13 @@ bool GateControlTask::CheckTimeElapsed(long timeRequired) {
 }
 
 void GateControlTask::OpenGate() {
-    pServoMotor->on();
-    pServoMotor->setPosition(OPEN_POS);
+    pCarWasher->servoOn();
+    pCarWasher->setServoPosition(OPEN_POS);
     state = OPEN;
 }
 
 bool GateControlTask::CloseGate() {
-    pServoMotor->setPosition(CLOSE_POS);
-    pServoMotor->off();
+    pCarWasher->setServoPosition(CLOSE_POS);
+    pCarWasher->servoOff();
     state = CLOSE;
 }

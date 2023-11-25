@@ -40,6 +40,10 @@ class CarWasher {
         void samplePresence();
         void sampleDistance();
         void sampleTemperature();
+        void servoOn();
+        void servoOff();
+        void setServoPosition(int angle);
+        bool isButtonClicked();
 
         void test();
 

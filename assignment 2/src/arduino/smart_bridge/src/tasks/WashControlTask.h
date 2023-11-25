@@ -4,13 +4,11 @@
 #include "Task.h"
 #include "devices/TempSensorImpl.h"
 #include "model/CarWasher.h"
-#include "devices/ButtonImpl.h"
 #include "BlinkingTask.h"
 
 class WashControlTask: public Task {
   CarWasher* pCarWasher;
   BlinkingTask* pBlinkingTask;
-  ButtonImpl* pButton;
   long washingStartTime;
   long washingTimeElapsed;
   long tempHighStartTime;

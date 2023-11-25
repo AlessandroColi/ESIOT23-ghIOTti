@@ -4,14 +4,13 @@
 
 WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask): 
         pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
-    pButton = new ButtonImpl(START_BTN);
     state = WAITING;
 }
   
 void WashControlTask::tick(){
     switch(state) {
         case WAITING:
-            if (pCarWasher->isReadyToWashState() && pButton->isClicked()) {
+            if (pCarWasher->isReadyToWashState() && pCarWasher->isButtonClicked()) {
                 StartWashing();
                 washingTimeElapsed = 0;
                 pCarWasher->setWashingState();

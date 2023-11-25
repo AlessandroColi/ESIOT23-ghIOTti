@@ -119,6 +119,22 @@ void CarWasher::sampleTemperature(){
     this->temperature = pTempSensor->getTemperature();
 }
 
+void CarWasher::servoOn(){
+    pServoMotor->on();
+}
+
+void CarWasher::servoOff(){
+    pServoMotor->off();
+}
+        
+void CarWasher::setServoPosition(int angle){
+    pServoMotor->setPosition(angle);
+}
+
+bool CarWasher::isButtonClicked(){
+    return pButton->isClicked();
+}
+
 void CarWasher::test(){
     
 }
