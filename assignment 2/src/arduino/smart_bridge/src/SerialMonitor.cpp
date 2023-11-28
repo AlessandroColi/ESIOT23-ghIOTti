@@ -1,27 +1,25 @@
 #include "SerialMonitor.h"
 
-CarWasher* pCarWasher;
-
 
 SerialMonitor:: SerialMonitor( CarWasher* pcw){
     this->pCarWasher = pcw; 
 }
 
-void init(){
+void SerialMonitor::init(){
   Serial.begin(9600);
 }
 
-void update(){
+void SerialMonitor:: update(){
     pCarWasher->sampleTemperature();
-    String msg = stateAsString(pCarWasher.getState()) + ":" + pCarWasher.getCurrentTemperature();
+    String msg = stateAsString() + ":" + pCarWasher->getCurrentTemperature();
     Serial.println(msg);
 }
 
-bool isMsgAvailable(){
+bool SerialMonitor:: isMsgAvailable(){
     return Serial.available()>0;
 }
     
-String getMsg(){
+String SerialMonitor:: getMsg(){
     String msg = "";
     while (Serial.available() > 0) {
         char c = Serial.read();  //gets one byte from serial buffer
@@ -31,31 +29,31 @@ String getMsg(){
     return msg ;
 }
 
-String stateAsString(state state){
+String SerialMonitor:: stateAsString(){
     String msg;
-    switch(state){
-        case WAITING_FOR_CAR:
+    switch(pCarWasher->state){
+        case CarWasher:: WAITING_FOR_CAR:
             msg = "WAITING_FOR_CAR";
             break;
-        case CAR_DETECTED_FOR_CHECK_IN:
+        case CarWasher:: CAR_DETECTED_FOR_CHECK_IN:
             msg = "CAR_DETECTED_FOR_CHECK_IN";
             break;
-        case ENTERING_WASHING_AREA:
+        case CarWasher:: ENTERING_WASHING_AREA:
             msg = "ENTERING_WASHING_AREA";
             break;
-        case READY_TO_WASH:
+        case CarWasher:: READY_TO_WASH:
             msg = "READY_TO_WASH";
             break;
-        case WASHING:
+        case CarWasher:: WASHING:
             msg = "WASHING";
             break;
-        case LEAVING_WASHING_AREA:
+        case CarWasher:: LEAVING_WASHING_AREA:
             msg = "LEAVING_WASHING_AREA";
             break;
-        case CHECK_OUT:
+        case CarWasher:: CHECK_OUT:
             msg = "CHECK_OUT";
             break;
-        case MAINTENANCE:
+        case CarWasher:: MAINTENANCE:
             msg = "MAINTENANCE";
             break;   
         default:

@@ -5,6 +5,10 @@
 
 class SerialMonitor{
 
+    CarWasher* pCarWasher;
+
+    SerialMonitor( CarWasher* pcw);
+
     public:
     void init();
     void update();
@@ -12,7 +16,7 @@ class SerialMonitor{
     String getMsg();
 
     private:
-    String stateAsString( state state);
-}
+    String stateAsString();
+};
 
 #endif
