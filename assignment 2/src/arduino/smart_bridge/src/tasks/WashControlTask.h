@@ -21,7 +21,7 @@ class WashControlTask: public Task {
   enum { WAITING, WASHING, TEMP_HIGH, MAINTENACE } state;
 
 public:
-  WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask);
+  WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask, SerialMonitor* pSerialMonitor);
   void tick();
 };
 

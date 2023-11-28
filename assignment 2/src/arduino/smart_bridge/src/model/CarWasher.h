@@ -41,7 +41,7 @@ class CarWasher {
         void sampleDistance();
         void sampleTemperature();
         void printOnLcd(String text);
-        void displayCountdown(int seconds);
+        void displayProgressBar(int seconds);
         void servoOn();
         void servoOff();
         void setServoPosition(int angle);
