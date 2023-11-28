@@ -5,9 +5,12 @@
 #include "tasks/DetectionTask.h"
 #include "tasks/GateControlTask.h"
 #include "tasks/WashControlTask.h"
+#include "SerialMonitor.h"
 
 Scheduler scheduler;
 CarWasher* pCarWasher;
+SerialMonitor* pSerialMonitor
+
 
 void setup() {
   scheduler.init(50);
@@ -31,8 +34,12 @@ void setup() {
   scheduler.addTask(pDetectionTask);
   scheduler.addTask(pGateControlTask);
   scheduler.addTask(pWashControlTask);
+
+  pSerialMonitor = new SerialMonitor(pCarWasher);
+  pSerialMonitor->init();
 }
 
 void loop() {
   scheduler.schedule();
+  pSerialMonitor.update();
 }
