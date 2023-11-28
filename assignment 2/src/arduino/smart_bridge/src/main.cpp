@@ -13,7 +13,7 @@ SerialMonitor* pSerialMonitor;
 
 
 void setup() {
-  scheduler.init(50);
+  scheduler.init(1);
   pCarWasher = new CarWasher();
   pCarWasher->init();
   
@@ -21,17 +21,17 @@ void setup() {
   pSerialMonitor->init();
 
   BlinkingTask* pBlinkingTask = new BlinkingTask(LED02_PIN);
-  pBlinkingTask->init(2000);
+  pBlinkingTask->init(50);
   pBlinkingTask->setActive(false);
 
   DetectionTask* pDetectionTask = new DetectionTask(pCarWasher);
-  pDetectionTask->init(300);  
+  pDetectionTask->init(7);  
 
   GateControlTask* pGateControlTask = new GateControlTask(pCarWasher, pBlinkingTask);
-  pGateControlTask->init(200);
+  pGateControlTask->init(30);
 
   WashControlTask* pWashControlTask = new WashControlTask(pCarWasher, pBlinkingTask, pSerialMonitor);
-  pWashControlTask->init(200);
+  pWashControlTask->init(11);
 
   scheduler.addTask(pBlinkingTask);
   scheduler.addTask(pDetectionTask);
@@ -42,5 +42,5 @@ void setup() {
 
 void loop() {
   scheduler.schedule();
-  pSerialMonitor->update();
+  //pSerialMonitor->update();
 }

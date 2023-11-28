@@ -19,13 +19,16 @@ void CarWasher::init(){
     led01 = new Led(LED01_PIN);
     led02 = new Led(LED02_PIN);
     led03 = new Led(LED03_PIN);
+    pinMode(LCD_VCC,OUTPUT);
+    digitalWrite(LCD_VCC,HIGH);
     lcd = new Lcd();
     pPir = new Pir(PIR_PIN);
     pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTIME);
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pTempSensor = new TempSensorLM35(TEMP_PIN);
     detPresence = false;
-    this->setWaitingForCarState();
+    this->setEnteringWashingAreaState();
+    servoOn();
 }
     
 void wake(){
@@ -34,7 +37,7 @@ void wake(){
 }
 
 void CarWasher::goToSleep(){
-    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, RISING); //qualsiasi pin va bene meno 1/2 credo
+    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, CHANGE); //qualsiasi pin va bene meno 1/2 credo
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
     sleep_enable();
     sleep_mode();  
@@ -79,22 +82,22 @@ bool CarWasher::isMaintenaceState(){
 
 void CarWasher::setWaitingForCarState(){
     state = WAITING_FOR_CAR;
-    goToSleep();
+    //goToSleep();
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
+    servoOn();
     led01->switchOn();
     this->printOnLcd("Welcome");
 }
 void CarWasher::setEnteringWashingAreaState(){
     state = ENTERING_WASHING_AREA;
     led01->switchOff();
-    led02->switchOn();
     this->printOnLcd("Proceed to the washing area");
 }
 void CarWasher::setReadyToWashState(){
     state = READY_TO_WASH;
-    led02->switchOff();
+    led02->switchOn();
     this->printOnLcd("Ready to wash"); 
 }
 void CarWasher::setWashingState(){
@@ -110,6 +113,7 @@ void CarWasher::setLeavingWashingAreaState(){
 void CarWasher::setCheckOutState(){
     state = CHECK_OUT;
     led03->switchOff();
+    lcd->clearDisplay();
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
@@ -122,16 +126,9 @@ void CarWasher::samplePresence(){
 }
 void CarWasher::sampleDistance(){
     //mapping?
-    double d = pSonar->getDistance();
-    if (d == NO_OBJ_DETECTED){
-        this->distance = 0;
-    } else {
-        double dist = MAXDIST - d*10; //?
-        if (dist < 0){
-            dist = 0;
-        }
-        this->distance = dist;
-    }
+    this->distance = pSonar->getDistance();
+
+    Serial.println(this->distance);
 }
 void CarWasher::sampleTemperature(){
     this->temperature = pTempSensor->getTemperature();
@@ -163,7 +160,8 @@ void CarWasher::setServoPosition(int angle){
 }
 
 bool CarWasher::isButtonClicked(){
-    return pButton->isClicked();
+    pButton->sync();
+    return pButton->isPressed();
 }
 
 void CarWasher::test(){

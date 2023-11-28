@@ -6,8 +6,8 @@
 #define LED01_PIN 2
 #define LED02_PIN 3
 #define LED03_PIN 4
-#define BLINK_INT1 0.1
-#define BLINK_INT2 0.5
+#define BLINK_INT1 10
+#define BLINK_INT2 50
 
 // sensors and buttons
 
@@ -20,16 +20,18 @@
 #define LCD_SDA_PIN A4
 #define LCD_SCL_PIN A5
 
+#define LCD_VCC 13
+
 
 //times and limit values
-#define N1 5000 //from detected to gate open
-#define N2 3000 //time that the car is in the correct position for ready wash
-#define N3 10000 //duration of car wash
-#define N4 3000 //time that the car is in the correct position for check out
+#define N1 5 //from detected to gate open
+#define N2 3 //time that the car is in the correct position for ready wash
+#define N3 10 //duration of car wash
+#define N4 3 //time that the car is in the correct position for check out
 
 #define MAXTEMP 40
 #define MAXTIME 10000
-#define MINDIST 0.1
-#define MAXDIST 0.3
+#define MINDIST 0.20
+#define MAXDIST 0.20
 
 #endif

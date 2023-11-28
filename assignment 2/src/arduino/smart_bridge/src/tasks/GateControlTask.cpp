@@ -10,11 +10,11 @@ void GateControlTask::tick(){
     switch (state) {
     case CLOSE:
         if (pCarWasher->isEnteringWashingAreaState()) {
+            pBlinkingTask->setPeriod(BLINK_INT1);
+            pBlinkingTask->setActive(true);
             OpenGate();
         }
         if (pCarWasher->isLeavingWashingAreaState()) {
-            pBlinkingTask->setPeriod(BLINK_INT1);
-            pBlinkingTask->setActive(true);
             OpenGate();
         }
         break;
@@ -45,8 +45,8 @@ void GateControlTask::tick(){
                 state = OPEN;
             }
             else if (CheckTimeElapsed(N4)) {
-                pCarWasher->setCheckOutState();
                 CloseGate();
+                pCarWasher->setCheckOutState();
             }
         }
         break;
@@ -58,13 +58,11 @@ bool GateControlTask::CheckTimeElapsed(long timeRequired) {
 }
 
 void GateControlTask::OpenGate() {
-    pCarWasher->servoOn();
     pCarWasher->setServoPosition(OPEN_POS);
     state = OPEN;
 }
 
 bool GateControlTask::CloseGate() {
     pCarWasher->setServoPosition(CLOSE_POS);
-    pCarWasher->servoOff();
     state = CLOSE;
 }

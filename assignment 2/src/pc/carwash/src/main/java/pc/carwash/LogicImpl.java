@@ -2,7 +2,7 @@ package pc.carwash;
 
 public class LogicImpl implements Logic{
 
-    private static String PORT = "COMM3";
+    private static String PORT = "COM6";
     private final SerialCommChannel serial = new SerialCommChannel(PORT ,9600);
     private int totalWashes = 0;
     private CarWasherState state = CarWasherState.MAINTENANCE;

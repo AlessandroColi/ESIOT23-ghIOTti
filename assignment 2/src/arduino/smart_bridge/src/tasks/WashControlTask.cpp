@@ -58,7 +58,7 @@ void WashControlTask::tick(){
 
 void WashControlTask::UpdateWashingtime() {
     long curr = millis();
-    washingTimeElapsed += (washingStartTime - curr);
+    washingTimeElapsed += (curr-washingStartTime);
     washingStartTime = curr;
 }
 
