@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "config.h"
 #include "scheduler/Scheduler.h"
-#include "tasks/Task.h"
 #include "tasks/BlinkingTask.h"
 #include "tasks/DetectionTask.h"
 #include "tasks/GateControlTask.h"
@@ -15,17 +14,18 @@ void setup() {
   pCarWasher = new CarWasher();
   pCarWasher->init();
 
-  Task* pBlinkingTask = new BlinkingTask(LED02_PIN);
-  pBlinkingTask->init(2000, false);
+  BlinkingTask* pBlinkingTask = new BlinkingTask(LED02_PIN);
+  pBlinkingTask->init(2000);
+  pBlinkingTask->setActive(false);
 
-  Task* pDetectionTask = new DetectionTask(pCarWasher);
-  pDetectionTask->init(100);
+  DetectionTask* pDetectionTask = new DetectionTask(pCarWasher);
+  pDetectionTask->init(300);  
 
-  Task* pGateControlTask = new GateControlTask(pCarWasher, pBlinkingTask);
-  pGateControlTask->init(100);
+  GateControlTask* pGateControlTask = new GateControlTask(pCarWasher, pBlinkingTask);
+  pGateControlTask->init(200);
 
-  Task* pWashControlTask = new WashControlTask(pCarWasher, pBlinkingTask);
-  pWashControlTask->init(100);
+  WashControlTask* pWashControlTask = new WashControlTask(pCarWasher, pBlinkingTask);
+  pWashControlTask->init(200);
 
   scheduler.addTask(pBlinkingTask);
   scheduler.addTask(pDetectionTask);

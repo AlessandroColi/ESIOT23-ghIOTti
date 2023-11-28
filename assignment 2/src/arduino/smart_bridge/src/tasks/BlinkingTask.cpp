@@ -7,7 +7,7 @@ BlinkingTask::BlinkingTask(int pin){
 void BlinkingTask::init(int period){
   Task::init(period);
   led = new Led(pin); 
-  state = OFF;    
+  state = OFF;
 }
   
 void BlinkingTask::tick(){
