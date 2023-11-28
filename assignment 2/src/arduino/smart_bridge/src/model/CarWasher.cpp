@@ -82,8 +82,7 @@ void CarWasher::setReadyToWashState(){
 }
 void CarWasher::setWashingState(){
     state = WASHING;
-    led02->switchOn();
-    this->printOnLcd("[progressbar]"); //TODO
+    this->displayProgressBar(N3);
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
@@ -127,7 +126,7 @@ void CarWasher::printOnLcd(String text){
     lcd->printText(text);
 }
 
-void CarWasher::displayCountdown(int seconds){
+void CarWasher::displayProgressBar(int seconds){
     lcd->clearDisplay();
     lcd->setCursor(0, 0);
     lcd->printText("Time left:");
