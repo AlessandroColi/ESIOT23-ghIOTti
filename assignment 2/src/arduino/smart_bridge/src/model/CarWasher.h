@@ -8,6 +8,7 @@
 #include "devices/ServoMotor.h"
 #include "devices/Button.h"
 #include "devices/TempSensorImpl.h"
+#include "devices/Lcd.h"
 
 class CarWasher {
     
