@@ -88,11 +88,11 @@ void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
     led02->switchOff();
     led03->switchOn();
+    this->printOnLcd("Washing complete, you can leave the area");
 }
 void CarWasher::setCheckOutState(){
     state = CHECK_OUT;
     led03->switchOff();
-    this->printOnLcd("Washing complete, you can leave the area");
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;

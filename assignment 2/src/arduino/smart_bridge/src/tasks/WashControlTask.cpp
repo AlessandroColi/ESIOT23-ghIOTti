@@ -47,7 +47,7 @@ void WashControlTask::tick(){
             if(pSerialMonitor->isMsgAvailable()){
                 String msg = pSerialMonitor->getMsg();
                 if(msg == "Maintenence done"){
-                    pCarWasher.setWashingState();
+                    pCarWasher->setWashingState();
                     StartWashing();
                 }
             }
