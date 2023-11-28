@@ -31,29 +31,29 @@ String SerialMonitor:: getMsg(){
 
 String SerialMonitor:: stateAsString(){
     String msg;
-    switch(pCarWasher->state){
-        case CarWasher:: WAITING_FOR_CAR:
+    switch(state){
+        case WAITING_FOR_CAR:
             msg = "WAITING_FOR_CAR";
             break;
-        case CarWasher:: CAR_DETECTED_FOR_CHECK_IN:
+        case CAR_DETECTED_FOR_CHECK_IN:
             msg = "CAR_DETECTED_FOR_CHECK_IN";
             break;
-        case CarWasher:: ENTERING_WASHING_AREA:
+        case ENTERING_WASHING_AREA:
             msg = "ENTERING_WASHING_AREA";
             break;
-        case CarWasher:: READY_TO_WASH:
+        case READY_TO_WASH:
             msg = "READY_TO_WASH";
             break;
-        case CarWasher:: WASHING:
+        case WASHING:
             msg = "WASHING";
             break;
-        case CarWasher:: LEAVING_WASHING_AREA:
+        case LEAVING_WASHING_AREA:
             msg = "LEAVING_WASHING_AREA";
             break;
-        case CarWasher:: CHECK_OUT:
+        case CHECK_OUT:
             msg = "CHECK_OUT";
             break;
-        case CarWasher:: MAINTENANCE:
+        case MAINTENANCE:
             msg = "MAINTENANCE";
             break;   
         default:

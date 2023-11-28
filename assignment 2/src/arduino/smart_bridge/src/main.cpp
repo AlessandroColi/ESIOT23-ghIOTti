@@ -9,7 +9,7 @@
 
 Scheduler scheduler;
 CarWasher* pCarWasher;
-SerialMonitor* pSerialMonitor
+SerialMonitor* pSerialMonitor;
 
 
 void setup() {
@@ -42,5 +42,5 @@ void setup() {
 
 void loop() {
   scheduler.schedule();
-  pSerialMonitor.update();
+  pSerialMonitor->update();
 }

@@ -7,31 +7,33 @@
 #include "devices/Sonar.h"
 #include "devices/ServoMotorImpl.h"
 #include "devices/TempSensorLM35.h"
+#include <avr/sleep.h>
 
 CarWasher::CarWasher(){
 }
+
+
 
 void CarWasher::init(){
     pButton = new ButtonImpl(START_BTN);
     led01 = new Led(LED01_PIN);
     led02 = new Led(LED02_PIN);
     led03 = new Led(LED03_PIN);
-    lcd = new Lcd(); //task?
+    lcd = new Lcd();
     pPir = new Pir(PIR_PIN);
     pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTIME);
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pTempSensor = new TempSensorLM35(TEMP_PIN);
     detPresence = false;
-    setWaitingForCarState();
+    this->setWaitingForCarState();
 }
     
 void wake(){
     detachInterrupt (digitalPinToInterrupt(PIR_PIN));
-    pCarWasher->setCarDetectedForCheckInState();
-    setEnteringWashingAreaState();
+    state=WAITING_FOR_CAR;
 }
 
-void goToSleep(){
+void CarWasher::goToSleep(){
     attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, RISING); //qualsiasi pin va bene meno 1/2 credo
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
     sleep_enable();

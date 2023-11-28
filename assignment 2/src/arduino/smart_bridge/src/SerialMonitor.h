@@ -7,9 +7,8 @@ class SerialMonitor{
 
     CarWasher* pCarWasher;
 
-    SerialMonitor( CarWasher* pcw);
-
     public:
+    SerialMonitor( CarWasher* pcw);
     void init();
     void update();
     bool isMsgAvailable();
