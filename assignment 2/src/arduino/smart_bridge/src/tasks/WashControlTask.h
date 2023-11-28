@@ -5,10 +5,13 @@
 #include "devices/TempSensorImpl.h"
 #include "model/CarWasher.h"
 #include "BlinkingTask.h"
+#include "SerialMonitor.h";
+
 
 class WashControlTask: public Task {
   CarWasher* pCarWasher;
   BlinkingTask* pBlinkingTask;
+  SerialMonitor* pSerialMonitor;
   long washingStartTime;
   long washingTimeElapsed;
   long tempHighStartTime;

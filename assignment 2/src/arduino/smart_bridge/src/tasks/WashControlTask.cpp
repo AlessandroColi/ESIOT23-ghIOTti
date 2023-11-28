@@ -2,8 +2,8 @@
 
 #include "config.h"
 
-WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask): 
-        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
+WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask, SerialMonitor* pSerialMonitor): 
+        pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask),pSerialMonitor(pSerialMonitor) {
     state = WAITING;
 }
   
@@ -23,7 +23,6 @@ void WashControlTask::tick(){
             if (pCarWasher->getCurrentTemperature() >= MAXTEMP) {
                 state = TEMP_HIGH;
                 tempHighStartTime = millis();
-                StopWashing();
             }
             if (washingTimeElapsed >= N3) {
                 state = WAITING;
@@ -35,7 +34,7 @@ void WashControlTask::tick(){
         case TEMP_HIGH:
             pCarWasher->sampleTemperature();
             if (pCarWasher->getCurrentTemperature() < MAXTEMP) {
-                StartWashing();
+                state = WASHING;
             }
             else if ((millis() - tempHighStartTime) >= N4) {
                 state = MAINTENACE;
@@ -45,7 +44,13 @@ void WashControlTask::tick(){
             break;
         
         case MAINTENACE:
-            //TO-DO: aggiungere che se si clicca il bottone torna nello stato normale di lavaggio (mi manca sapere come sarebbe l'implementazione di java).
+            if(pSerialMonitor->isMsgAvailable()){
+                String msg = pSerialMonitor->getMsg();
+                if(msg == "Maintenence done"){
+                    pCarWasher.setWashingState();
+                    StartWashing();
+                }
+            }
             break;
     }
 }
