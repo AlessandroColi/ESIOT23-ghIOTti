@@ -19,6 +19,7 @@ void WashControlTask::tick(){
             }
             break;
         case WASHING:
+            updateWashingtime();
             pCarWasher->sampleTemperature();
             if (pCarWasher->getCurrentTemperature() >= MAXTEMP) {
                 state = TEMP_HIGH;
@@ -32,6 +33,7 @@ void WashControlTask::tick(){
             break;
     
         case TEMP_HIGH:
+            updateWashingtime();
             pCarWasher->sampleTemperature();
             if (pCarWasher->getCurrentTemperature() < MAXTEMP) {
                 state = WASHING;
@@ -39,7 +41,6 @@ void WashControlTask::tick(){
             else if ((millis() - tempHighStartTime) >= N4) {
                 state = MAINTENACE;
                 pCarWasher->setMaintenaceState();
-                StopWashing();
             }
             break;
         
@@ -55,8 +56,10 @@ void WashControlTask::tick(){
     }
 }
 
-void WashControlTask::StopWashing() {
-    washingTimeElapsed += (washingStartTime - millis());
+void WashControlTask::updateWashingtime() {
+    long curr = millis();
+    washingTimeElapsed += (washingStartTime - curr);
+    washingStartTime = curr;
 }
 
 void WashControlTask::StartWashing() {

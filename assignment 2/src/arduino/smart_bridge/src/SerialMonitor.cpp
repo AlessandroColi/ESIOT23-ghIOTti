@@ -12,6 +12,7 @@ void init(){
 }
 
 void update(){
+    pCarWasher->sampleTemperature();
     String msg = stateAsString(pCarWasher.getState()) + ":" + pCarWasher.getCurrentTemperature();
     Serial.println(msg);
 }
