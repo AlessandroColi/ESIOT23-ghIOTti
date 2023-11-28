@@ -25,6 +25,20 @@ void CarWasher::init(){
     setWaitingForCarState();
 }
     
+void wake(){
+    detachInterrupt (digitalPinToInterrupt(PIR_PIN));
+    pCarWasher->setCarDetectedForCheckInState();
+    setEnteringWashingAreaState();
+}
+
+void goToSleep(){
+    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, RISING); //qualsiasi pin va bene meno 1/2 credo
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
+    sleep_enable();
+    sleep_mode();  
+    sleep_disable();  
+}
+
 double CarWasher::getCurrentDistance(){
     return distance;
 }
@@ -63,6 +77,7 @@ bool CarWasher::isMaintenaceState(){
 
 void CarWasher::setWaitingForCarState(){
     state = WAITING_FOR_CAR;
+    goToSleep();
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
