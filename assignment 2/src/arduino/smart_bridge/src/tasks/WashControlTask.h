@@ -16,8 +16,6 @@ class WashControlTask: public Task {
   long washingTimeElapsed;
   long tempHighStartTime;
 
-  void UpdateWashingtime();
-  void StartWashing();
   enum { WAITING, WASHING, TEMP_HIGH, MAINTENACE } state;
 
 public:
