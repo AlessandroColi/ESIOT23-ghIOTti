@@ -12,8 +12,8 @@
 volatile bool cardDetectedWhileWaiting = false;
 
 void wake(){
-    //detachInterrupt (digitalPinToInterrupt(PIR_PIN));
     cardDetectedWhileWaiting = true;
+    delay(100);
 }
 
 
@@ -39,7 +39,8 @@ void CarWasher::init(){
 
 void CarWasher::goToSleep(){
     lcd->printText("gn");
-    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, CHANGE); 
+    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, RISING); 
+    delay(100);
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
     sleep_enable();
     sleep_mode();  
@@ -88,6 +89,7 @@ void CarWasher::setWaitingForCarState(){
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
+    detachInterrupt (digitalPinToInterrupt(PIR_PIN));
     led01->switchOn();
     this->printOnLcd("Welcome");
 }
