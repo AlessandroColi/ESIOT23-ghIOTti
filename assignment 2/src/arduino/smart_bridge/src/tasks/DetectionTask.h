@@ -7,6 +7,8 @@
 
 class DetectionTask: public Task {
   CarWasher* pCarWasher;
+  long startTimer;
+  enum {WAITING, DETECTED} state;
 
 public:
   DetectionTask(CarWasher* pCarWasher);
