@@ -12,8 +12,6 @@
 CarWasher::CarWasher(){
 }
 
-
-
 void CarWasher::init(){
     pButton = new ButtonImpl(START_BTN);
     led01 = new Led(LED01_PIN);
@@ -33,7 +31,7 @@ void CarWasher::init(){
     
 void wake(){
     detachInterrupt (digitalPinToInterrupt(PIR_PIN));
-    state=CAR_DETECTED_FOR_CHECK_IN;
+    cardDetectedWhileWaiting = true;
 }
 
 void CarWasher::goToSleep(){
@@ -52,7 +50,7 @@ double CarWasher::getCurrentTemperature(){
 }
 
 bool CarWasher::detectedPresence(){
-    return this->detPresence;
+    return cardDetectedWhileWaiting;
 }
 
 bool CarWasher::isWaitingForCarState(){
@@ -81,6 +79,7 @@ void CarWasher::setWaitingForCarState(){
     state = WAITING_FOR_CAR;
     led03->switchOff();
     lcd->clearDisplay();
+    cardDetectedWhileWaiting = false;
     goToSleep();
 }
 void CarWasher::setCarDetectedForCheckInState(){

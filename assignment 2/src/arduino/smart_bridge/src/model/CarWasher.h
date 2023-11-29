@@ -10,10 +10,9 @@
 #include "devices/TempSensorImpl.h"
 #include "devices/Lcd.h"
 
-enum State{ WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, 
-            READY_TO_WASH, WASHING, LEAVING_WASHING_AREA, MAINTENANCE};
 
-static State state = WAITING_FOR_CAR;
+
+bool cardDetectedWhileWaiting = false;
 
 class CarWasher {
     
@@ -68,6 +67,12 @@ class CarWasher {
         Sonar* pSonar;
         ServoMotor* pServoMotor;
         TempSensorLM35* pTempSensor;
+
+        enum State{ WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, 
+            READY_TO_WASH, WASHING, LEAVING_WASHING_AREA, MAINTENANCE};
+
+        static State state;
+
 };
 
 #endif
