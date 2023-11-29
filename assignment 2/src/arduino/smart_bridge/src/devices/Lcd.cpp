@@ -17,7 +17,7 @@ void Lcd::clearDisplay() {
     lcd.clear();
 }
 
-void Lcd::progressBar(int seconds){
+void Lcd::progressBar(int perc){
     byte p1[8] = {
     B10000,
     B10000,
@@ -77,11 +77,10 @@ void Lcd::progressBar(int seconds){
     
     lcd.setCursor(0,1);
     lcd.print("                ");  
-    for (int i = 0; i<20; i++){
+    for (int i = 0; i<perc/20; i++){
         for(int j=0; j<5; j++){
             lcd.setCursor(i, 1);
             lcd.write(j);
-            delay(100*(seconds/8));
         }  
     }
 }

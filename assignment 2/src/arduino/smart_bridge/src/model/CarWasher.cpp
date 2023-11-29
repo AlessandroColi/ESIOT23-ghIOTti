@@ -27,13 +27,13 @@ void CarWasher::init(){
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pTempSensor = new TempSensorLM35(TEMP_PIN);
     detPresence = false;
-    this->setEnteringWashingAreaState();
+    this->setWaitingForCarState();
     servoOn();
 }
     
 void wake(){
     detachInterrupt (digitalPinToInterrupt(PIR_PIN));
-    state=WAITING_FOR_CAR;
+    state=CAR_DETECTED_FOR_CHECK_IN;
 }
 
 void CarWasher::goToSleep(){
@@ -73,16 +73,15 @@ bool CarWasher::isWashingState(){
 bool CarWasher::isLeavingWashingAreaState(){
     return state == LEAVING_WASHING_AREA;
 }
-bool CarWasher::isCheckOutState(){
-    return state == CHECK_OUT;
-}
 bool CarWasher::isMaintenaceState(){
     return state == MAINTENANCE;
 }
 
 void CarWasher::setWaitingForCarState(){
     state = WAITING_FOR_CAR;
-    //goToSleep();
+    led03->switchOff();
+    lcd->clearDisplay();
+    goToSleep();
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
@@ -102,18 +101,12 @@ void CarWasher::setReadyToWashState(){
 }
 void CarWasher::setWashingState(){
     state = WASHING;
-    this->displayProgressBar(N3);
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
     led02->switchOff();
     led03->switchOn();
     this->printOnLcd("Washing complete, you can leave the area");
-}
-void CarWasher::setCheckOutState(){
-    state = CHECK_OUT;
-    led03->switchOff();
-    lcd->clearDisplay();
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
@@ -140,12 +133,13 @@ void CarWasher::printOnLcd(String text){
     lcd->printText(text);
 }
 
-void CarWasher::displayProgressBar(int seconds){
+void CarWasher::showProgress(int perc){
     lcd->clearDisplay();
     lcd->setCursor(0, 0);
     lcd->printText("Time left:");
-    lcd->progressBar(seconds);
+    lcd->progressBar(perc);
 }
+
 
 void CarWasher::servoOn(){
     pServoMotor->on();

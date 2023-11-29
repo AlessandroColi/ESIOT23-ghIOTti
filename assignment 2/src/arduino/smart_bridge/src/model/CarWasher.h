@@ -10,8 +10,8 @@
 #include "devices/TempSensorImpl.h"
 #include "devices/Lcd.h"
 
-enum State{ WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, READY_TO_WASH, 
-            WASHING, LEAVING_WASHING_AREA, CHECK_OUT, MAINTENANCE};
+enum State{ WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, 
+            READY_TO_WASH, WASHING, LEAVING_WASHING_AREA, MAINTENANCE};
 
 static State state = WAITING_FOR_CAR;
 
@@ -32,7 +32,6 @@ class CarWasher {
         bool isReadyToWashState();
         bool isWashingState();
         bool isLeavingWashingAreaState();
-        bool isCheckOutState();
         bool isMaintenaceState();
 
         void setWaitingForCarState();
@@ -41,14 +40,13 @@ class CarWasher {
         void setReadyToWashState();
         void setWashingState();
         void setLeavingWashingAreaState();
-        void setCheckOutState();
         void setMaintenaceState();
 
         void samplePresence();
         void sampleDistance();
         void sampleTemperature();
         void printOnLcd(String text);
-        void displayProgressBar(int seconds);
+        void showProgress(int perc);
         void servoOn();
         void servoOff();
         void setServoPosition(int angle);

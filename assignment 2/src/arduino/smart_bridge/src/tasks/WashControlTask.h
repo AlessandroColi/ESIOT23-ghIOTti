@@ -16,7 +16,7 @@ class WashControlTask: public Task {
   long washingTimeElapsed;
   long tempHighStartTime;
 
-  enum { WAITING, WASHING, TEMP_HIGH, MAINTENACE } state;
+  enum { WAITING, WASHING, TEMP_HIGH, MAINTENACE } internal_state;
 
 public:
   WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask, SerialMonitor* pSerialMonitor);
