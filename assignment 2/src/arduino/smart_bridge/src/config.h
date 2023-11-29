@@ -3,7 +3,7 @@
 
 // leds
 
-#define LED01_PIN 2
+#define LED01_PIN 8
 #define LED02_PIN 3
 #define LED03_PIN 4
 #define BLINK_INT1 10
@@ -12,7 +12,7 @@
 // sensors and buttons
 
 #define START_BTN 5
-#define PIR_PIN 8
+#define PIR_PIN 2
 #define TEMP_PIN A3
 #define DIST_ECHO_PIN 11
 #define DIST_TRIG_PIN 10

@@ -1,4 +1,4 @@
-#include "WashControlTask.h";
+#include "WashControlTask.h"
 
 #include "config.h"
 

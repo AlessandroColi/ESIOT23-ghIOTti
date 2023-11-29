@@ -1,4 +1,4 @@
-#include "DetectionTask.h";
+#include "DetectionTask.h"
 
 #include "config.h"
 

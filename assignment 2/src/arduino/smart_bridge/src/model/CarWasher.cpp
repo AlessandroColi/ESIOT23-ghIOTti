@@ -9,6 +9,15 @@
 #include "devices/TempSensorLM35.h"
 #include <avr/sleep.h>
 
+volatile bool cardDetectedWhileWaiting = false;
+
+void wake(){
+    detachInterrupt (digitalPinToInterrupt(PIR_PIN));
+    cardDetectedWhileWaiting = true;
+    Serial.println("ppppppppppppppppppppp");
+}
+
+
 CarWasher::CarWasher(){
 }
 
@@ -25,17 +34,13 @@ void CarWasher::init(){
     pServoMotor = new ServoMotorImpl(MOTOR_PIN);
     pTempSensor = new TempSensorLM35(TEMP_PIN);
     detPresence = false;
-    this->setWaitingForCarState();
     servoOn();
-}
-    
-void wake(){
-    detachInterrupt (digitalPinToInterrupt(PIR_PIN));
-    cardDetectedWhileWaiting = true;
+    this->setWaitingForCarState();
 }
 
 void CarWasher::goToSleep(){
-    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, CHANGE); //qualsiasi pin va bene meno 1/2 credo
+    lcd->printText("gn");
+    attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, CHANGE); 
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
     sleep_enable();
     sleep_mode();  
@@ -84,7 +89,6 @@ void CarWasher::setWaitingForCarState(){
 }
 void CarWasher::setCarDetectedForCheckInState(){
     state = CAR_DETECTED_FOR_CHECK_IN;
-    servoOn();
     led01->switchOn();
     this->printOnLcd("Welcome");
 }

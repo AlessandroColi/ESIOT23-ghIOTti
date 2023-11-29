@@ -13,7 +13,7 @@ class GateControlTask: public Task {
   BlinkingTask* pBlinkingTask;
   
   long atRightDistTime;
-  enum { OPEN, CLOSE, WAITING_TO_CLOSE } state;
+  enum { OPEN, CLOSE, WAITING_TO_CLOSE } internal_state;
 
   bool CheckTimeElapsed(long timeRequired);
   void OpenGate();

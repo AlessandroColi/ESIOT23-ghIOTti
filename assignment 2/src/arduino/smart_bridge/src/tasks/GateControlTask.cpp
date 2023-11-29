@@ -3,11 +3,11 @@
 
 GateControlTask::GateControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask):
         pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask) {
-    state = CLOSE;
+    internal_state = CLOSE;
 }
   
 void GateControlTask::tick(){
-    switch (state) {
+    switch (internal_state) {
     case CLOSE:
         if (pCarWasher->isEnteringWashingAreaState()) {
             pBlinkingTask->setPeriod(BLINK_INT1);
@@ -23,7 +23,7 @@ void GateControlTask::tick(){
         pCarWasher->sampleDistance();
         if ((pCarWasher->isEnteringWashingAreaState() && pCarWasher->getCurrentDistance() <= MINDIST)
                 || (pCarWasher->isLeavingWashingAreaState() && pCarWasher->getCurrentDistance() >= MAXDIST)) {
-            state = WAITING_TO_CLOSE;
+            internal_state = WAITING_TO_CLOSE;
             atRightDistTime = millis();
         }
         break;
@@ -32,7 +32,7 @@ void GateControlTask::tick(){
         pCarWasher->sampleDistance();
         if (pCarWasher->isEnteringWashingAreaState()) {
             if (pCarWasher->getCurrentDistance() > MINDIST) {
-                state = OPEN;
+                internal_state = OPEN;
             }
             else if (CheckTimeElapsed(N2)) {
                 pBlinkingTask->setActive(false);
@@ -42,7 +42,7 @@ void GateControlTask::tick(){
         }
         if (pCarWasher->isLeavingWashingAreaState()) {
             if (pCarWasher->getCurrentDistance() < MAXDIST) {
-                state = OPEN;
+                internal_state = OPEN;
             }
             else if (CheckTimeElapsed(N4)) {
                 CloseGate();
@@ -59,10 +59,10 @@ bool GateControlTask::CheckTimeElapsed(long timeRequired) {
 
 void GateControlTask::OpenGate() {
     pCarWasher->setServoPosition(OPEN_POS);
-    state = OPEN;
+    internal_state = OPEN;
 }
 
 bool GateControlTask::CloseGate() {
     pCarWasher->setServoPosition(CLOSE_POS);
-    state = CLOSE;
+    internal_state = CLOSE;
 }

@@ -9,10 +9,7 @@
 #include "devices/Button.h"
 #include "devices/TempSensorImpl.h"
 #include "devices/Lcd.h"
-
-
-
-bool cardDetectedWhileWaiting = false;
+#include "config.h"
 
 class CarWasher {
     
@@ -71,7 +68,7 @@ class CarWasher {
         enum State{ WAITING_FOR_CAR, CAR_DETECTED_FOR_CHECK_IN, ENTERING_WASHING_AREA, 
             READY_TO_WASH, WASHING, LEAVING_WASHING_AREA, MAINTENANCE};
 
-        static State state;
+        State state;
 
 };
 
