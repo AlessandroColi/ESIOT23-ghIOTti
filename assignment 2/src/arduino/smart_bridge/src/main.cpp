@@ -42,5 +42,5 @@ void setup() {
 
 void loop() {
   scheduler.schedule();
-  //pSerialMonitor->update();
+  pSerialMonitor->update();
 }

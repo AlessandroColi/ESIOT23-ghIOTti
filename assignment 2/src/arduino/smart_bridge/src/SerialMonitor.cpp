@@ -31,33 +31,15 @@ String SerialMonitor:: getMsg(){
 
 String SerialMonitor:: stateAsString(){
     String msg;
-    switch(state){
-        case WAITING_FOR_CAR:
-            msg = "WAITING_FOR_CAR";
-            break;
-        case CAR_DETECTED_FOR_CHECK_IN:
-            msg = "CAR_DETECTED_FOR_CHECK_IN";
-            break;
-        case ENTERING_WASHING_AREA:
-            msg = "ENTERING_WASHING_AREA";
-            break;
-        case READY_TO_WASH:
-            msg = "READY_TO_WASH";
-            break;
-        case WASHING:
-            msg = "WASHING";
-            break;
-        case LEAVING_WASHING_AREA:
-            msg = "LEAVING_WASHING_AREA";
-            break;
-        case CHECK_OUT:
-            msg = "CHECK_OUT";
-            break;
-        case MAINTENANCE:
-            msg = "MAINTENANCE";
-            break;   
-        default:
-            msg="";   
-    }
+    if(pCarWasher->isWaitingForCarState()) msg="WAITING_FOR_CAR";
+    else if(pCarWasher->isCarDetectedForCheckInState()) msg="CAR_DETECTED_FOR_CHECK_IN";
+    else if(pCarWasher->isEnteringWashingAreaState()) msg="ENTERING_WASHING_AREA";
+    else if(pCarWasher->isReadyToWashState()) msg="READY_TO_WASH";
+    else if(pCarWasher->isWashingState()) msg="WASHING";
+    else if(pCarWasher->isLeavingWashingAreaState()) msg="LEAVING_WASHING_AREA";
+    else if(pCarWasher->isCheckOutState()) msg="CHECK_OUT";
+    else if(pCarWasher->isMaintenaceState()) msg="MAINTENANCE";
+    else msg="";   
+
     return msg;
 }

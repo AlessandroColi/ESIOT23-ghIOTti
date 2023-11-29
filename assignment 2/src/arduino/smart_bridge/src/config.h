@@ -24,10 +24,10 @@
 
 
 //times and limit values
-#define N1 5 //from detected to gate open
-#define N2 3 //time that the car is in the correct position for ready wash
-#define N3 10 //duration of car wash
-#define N4 3 //time that the car is in the correct position for check out
+#define N1 500 //from detected to gate open
+#define N2 300 //time that the car is in the correct position for ready wash
+#define N3 10000 //duration of car wash
+#define N4 300 //time that the car is in the correct position for check out
 
 #define MAXTEMP 40
 #define MAXTIME 10000
