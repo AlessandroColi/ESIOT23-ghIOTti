@@ -1,5 +1,4 @@
 #include "DetectionTask.h"
-
 #include "config.h"
 
 DetectionTask::DetectionTask(CarWasher* pCarWasher) {

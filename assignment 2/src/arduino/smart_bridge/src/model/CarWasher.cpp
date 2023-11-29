@@ -12,9 +12,8 @@
 volatile bool cardDetectedWhileWaiting = false;
 
 void wake(){
-    detachInterrupt (digitalPinToInterrupt(PIR_PIN));
+    //detachInterrupt (digitalPinToInterrupt(PIR_PIN));
     cardDetectedWhileWaiting = true;
-    Serial.println("ppppppppppppppppppppp");
 }
 
 
