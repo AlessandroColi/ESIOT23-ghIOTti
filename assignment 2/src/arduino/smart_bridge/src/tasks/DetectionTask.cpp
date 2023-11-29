@@ -3,15 +3,17 @@
 
 DetectionTask::DetectionTask(CarWasher* pCarWasher) {
     this->pCarWasher = pCarWasher;
-    startTimer = millis();
+    state=WAITING;
 }
   
 void DetectionTask::tick(){
     switch(state) {
         case WAITING:
+            
             if (pCarWasher->isWaitingForCarState() && pCarWasher->detectedPresence()) {
                 state = DETECTED;
                 startTimer = millis();
+                pCarWasher->setCarDetectedForCheckInState();
             }
             break;
 
