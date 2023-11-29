@@ -37,7 +37,6 @@ String SerialMonitor:: stateAsString(){
     else if(pCarWasher->isReadyToWashState()) msg="READY_TO_WASH";
     else if(pCarWasher->isWashingState()) msg="WASHING";
     else if(pCarWasher->isLeavingWashingAreaState()) msg="LEAVING_WASHING_AREA";
-    else if(pCarWasher->isCheckOutState()) msg="CHECK_OUT";
     else if(pCarWasher->isMaintenaceState()) msg="MAINTENANCE";
     else msg="";   
 

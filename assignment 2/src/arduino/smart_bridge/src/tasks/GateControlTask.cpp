@@ -46,7 +46,7 @@ void GateControlTask::tick(){
             }
             else if (CheckTimeElapsed(N4)) {
                 CloseGate();
-                pCarWasher->setCheckOutState();
+                pCarWasher->setWaitingForCarState();
             }
         }
         break;
