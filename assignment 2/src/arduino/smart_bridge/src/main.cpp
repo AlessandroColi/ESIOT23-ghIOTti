@@ -25,13 +25,13 @@ void setup() {
   pBlinkingTask->setActive(false);
 
   DetectionTask* pDetectionTask = new DetectionTask(pCarWasher);
-  pDetectionTask->init(100);  
+  pDetectionTask->init(50);  
 
   GateControlTask* pGateControlTask = new GateControlTask(pCarWasher, pBlinkingTask);
-  pGateControlTask->init(100);
+  pGateControlTask->init(500);
 
   WashControlTask* pWashControlTask = new WashControlTask(pCarWasher, pBlinkingTask, pSerialMonitor);
-  pWashControlTask->init(100);
+  pWashControlTask->init(1000);
 
   scheduler.addTask(pBlinkingTask);
   scheduler.addTask(pDetectionTask);
