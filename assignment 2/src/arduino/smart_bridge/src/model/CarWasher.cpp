@@ -96,7 +96,7 @@ void CarWasher::setCarDetectedForCheckInState(){
 void CarWasher::setEnteringWashingAreaState(){
     state = ENTERING_WASHING_AREA;
     led01->switchOff();
-    this->printOnLcd("Proceed to the washing area");
+    this->printOnLcd("Proceed to the\n washing area");
 }
 void CarWasher::setReadyToWashState(){
     state = READY_TO_WASH;
@@ -104,17 +104,18 @@ void CarWasher::setReadyToWashState(){
     this->printOnLcd("Ready to wash"); 
 }
 void CarWasher::setWashingState(){
+    lcd->printText("progress: ");
     state = WASHING;
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
     led02->switchOff();
     led03->switchOn();
-    this->printOnLcd("Washing complete, you can leave the area");
+    this->printOnLcd("Washing complete,\n you can leave the area");
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
-    this->printOnLcd("Detected a problem - please wait");
+    this->printOnLcd("Detected a problem \n- please wait");
 }
 
 void CarWasher::samplePresence(){
@@ -122,10 +123,7 @@ void CarWasher::samplePresence(){
     this->detPresence = pPir->isDetected();
 }
 void CarWasher::sampleDistance(){
-    //mapping?
     this->distance = pSonar->getDistance();
-
-    Serial.println(this->distance);
 }
 void CarWasher::sampleTemperature(){
     this->temperature = pTempSensor->getTemperature();
@@ -138,9 +136,6 @@ void CarWasher::printOnLcd(String text){
 }
 
 void CarWasher::showProgress(int perc){
-    lcd->clearDisplay();
-    lcd->setCursor(0, 0);
-    lcd->printText("Time left:");
     lcd->progressBar(perc);
 }
 

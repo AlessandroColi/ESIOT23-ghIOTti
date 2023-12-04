@@ -19,7 +19,9 @@ Lcd::Lcd() {
 } 
 
 void Lcd::printText(String text) {
-    lcd.print(text);
+  lcd.clear();
+  lcd.setCursor(0,1);
+  lcd.print(text);
 }
 
 void Lcd::setCursor(int x, int y) {
@@ -34,14 +36,11 @@ void Lcd::progressBar(int perc){
   int full = perc/5;
   int limit = perc % 5;
 
-  for(int row = 1 ; row < 4 ; row++){
-    for (int x = 0; x < full; x++)                        // Print all the filled blocks
-    {
-      lcd.setCursor (x, row);
-      lcd.write(byte(5));
-      delay(10);                                         //allow to write prev block
-    }
-    lcd.setCursor (full, row);
-    if (limit != 0)lcd.write(byte(limit));
+  for (int x = 0; x < full; x++)                        // Print all the filled blocks
+  {
+    lcd.setCursor (x, 2);
+    lcd.write(byte(5));                                         //allow to write prev block
   }
+  lcd.setCursor (full, 2);
+  if (limit != 0)lcd.write(byte(limit));
 }

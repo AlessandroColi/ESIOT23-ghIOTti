@@ -6,8 +6,8 @@
 #define LED01_PIN 8
 #define LED02_PIN 3
 #define LED03_PIN 4
-#define BLINK_INT1 10
-#define BLINK_INT2 50
+#define BLINK_INT1 100
+#define BLINK_INT2 500
 
 // sensors and buttons
 
@@ -15,8 +15,8 @@
 #define PIR_PIN 2
 #define TEMP_PIN A3
 #define DIST_ECHO_PIN 11
-#define DIST_TRIG_PIN 10
-#define MOTOR_PIN 9
+#define DIST_TRIG_PIN 12
+#define MOTOR_PIN 13
 #define LCD_SDA_PIN A4
 #define LCD_SCL_PIN A5
 
