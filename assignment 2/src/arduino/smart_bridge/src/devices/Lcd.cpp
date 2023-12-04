@@ -18,70 +18,40 @@ void Lcd::clearDisplay() {
 }
 
 void Lcd::progressBar(int perc){
-    byte p1[8] = {
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    B10000,
-    };
-    byte p2[8] = {
-    B11000,
-    B11000,
-    B11000,
-    B11000,
-    B11000,
-    B11000,
-    B11000,
-    B11000,
-    };
-    byte p3[8] = {
-    B11100,
-    B11100,
-    B11100,
-    B11100,
-    B11100,
-    B11100,
-    B11100,
-    B11100,
-    };
-    byte p4[8] = {
-    B11110,
-    B11110,
-    B11110,
-    B11110,
-    B11110,
-    B11110,
-    B11110,
-    B11110,
-    };
-    byte p5[8] = {
-    B11111,
-    B11111,
-    B11111,
-    B11111,
-    B11111,
-    B11111,
-    B11111,
-    B11111,
-    };
+  int numCols = 16;
+  int num_lines = 80;
+  byte bar1[8] = { 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x10};
+  byte bar2[8] = { 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18, 0x18};
+  byte bar3[8] = { 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C, 0x1C};
+  byte bar4[8] = { 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E};
+  byte bar5[8] = { 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F, 0x1F};
 
-    lcd.createChar(0, p1);
-    lcd.createChar(1, p2);
-    lcd.createChar(2, p3);
-    lcd.createChar(3, p4);
-    lcd.createChar(4, p5);
-    
-    lcd.setCursor(0,1);
-    lcd.print("                ");  
-    for (int i = 0; i<perc/20; i++){
-        for(int j=0; j<5; j++){
-            lcd.setCursor(i, 1);
-            lcd.write(j);
-        }  
-    }
+  int block = map(perc, 0, 100, 0, numCols);
+  int bar = (line-(block*5));   // Bar represent the actual lines that will be printed 
+  
+  /* LCD Progress Bar Characters, create your custom bars */
+
+  lcd.createChar(1, bar1);
+  lcd.createChar(2, bar2);
+  lcd.createChar(3, bar3);
+  lcd.createChar(4, bar4);
+  lcd.createChar(5, bar5);
+  
+  for (int x = 0; x < block; x++)                        // Print all the filled blocks
+  {
+    lcd.setCursor (x, row);
+    lcd.write (1023);
+    delay(20);
+  }
+  
+  lcd.setCursor (block, row);                            // Set the cursor at the current block and print the numbers of line needed
+  if (bar != 0) lcd.write (bar);
+  if (block == 0) lcd.write (1022);   
+  
+  for (int x = numCols; x > block; x--)                       // Print all the blank blocks
+  {
+    lcd.setCursor (x, row);
+    lcd.write (1022);
+    delay(20);
+  }
 }
-

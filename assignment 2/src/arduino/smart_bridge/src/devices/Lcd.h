@@ -11,7 +11,7 @@ class Lcd{
         void printText(String text);
         void setCursor(int x, int y);
         void clearDisplay();
-        void progressBar(int seconds);
+        void progressBar(int perc);
 
     private:
         LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 20, 4);
