@@ -34,6 +34,7 @@ void CarWasher::init(){
     pTempSensor = new TempSensorLM35(TEMP_PIN);
     detPresence = false;
     servoOn();
+
     this->setWaitingForCarState();
 }
 
@@ -139,6 +140,7 @@ void CarWasher::showProgress(int perc){
 
 void CarWasher::servoOn(){
     pServoMotor->on();
+    pServoMotor->setPosition(0);
 }
 
 void CarWasher::servoOff(){

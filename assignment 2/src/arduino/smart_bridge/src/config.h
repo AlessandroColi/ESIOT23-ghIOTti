@@ -30,8 +30,8 @@
 #define N4 3000 //time that the car is in the correct position for check out
 
 #define MAXTEMP 40
-#define MINDIST 0.25
-#define MAXDIST 0.10
+#define MINDIST 0.10
+#define MAXDIST 0.25
 
 #define MAXTIME 5000 //for distance sensor
 
