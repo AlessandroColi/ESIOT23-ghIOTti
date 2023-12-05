@@ -32,7 +32,7 @@ public class SmartCarWash extends Application {
     public void start(Stage primaryStage) throws InterruptedException {
         primaryStage.requestFocus();
         primaryStage.setTitle("Car Washing Dashboard");
-        primaryStage.setFullScreen(true);
+        //primaryStage.setFullScreen(true);
         logic.update();
 
         // Labels
