@@ -6,7 +6,7 @@ Sonar::Sonar(int echoP, int trigP, long maxTime) : echoPin(echoP), trigPin(trigP
 {
     pinMode(trigPin, OUTPUT);
     pinMode(echoPin, INPUT);
-    temperature = 20; // default value
+    temperature = 27; // avr mesured with sensor 
 }
 
 void Sonar::setTemperature(float temp)

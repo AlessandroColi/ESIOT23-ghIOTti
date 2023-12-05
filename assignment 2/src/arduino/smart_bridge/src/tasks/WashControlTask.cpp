@@ -16,6 +16,7 @@ void WashControlTask::tick(){
                 pBlinkingTask->setPeriod(BLINK_INT2);
                 pBlinkingTask->setActive(true);
                 pCarWasher->setWashingState();
+                washingTimeElapsed = 0;
                 internal_state=WASHING;
             }
             break;
