@@ -20,7 +20,7 @@ Lcd::Lcd() {
 
 void Lcd::printText(String text) {
   lcd.clear();
-  lcd.setCursor(0,1);
+  lcd.setCursor(0,0);
   lcd.print(text);
 }
 

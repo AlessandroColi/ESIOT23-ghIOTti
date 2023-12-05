@@ -13,7 +13,6 @@ void SerialMonitor:: update(){
     pCarWasher->sampleTemperature();
     String msg = stateAsString() + ":" + pCarWasher->getCurrentTemperature();
     Serial.println(msg);
-    delayMicroseconds(50);
 }
 
 bool SerialMonitor:: isMsgAvailable(){
@@ -25,7 +24,7 @@ String SerialMonitor:: getMsg(){
     while (Serial.available() > 0) {
         char c = Serial.read();  //gets one byte from serial buffer
         msg += c; 
-      //delay to allow buffer to fill 
+        //delay to allow buffer to fill 
     }
     return msg ;
 }

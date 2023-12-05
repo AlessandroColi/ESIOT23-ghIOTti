@@ -13,7 +13,7 @@ volatile bool cardDetectedWhileWaiting = false;
 
 void wake(){
     cardDetectedWhileWaiting = true;
-    delay(100);
+    delay(50);
 }
 
 
@@ -38,7 +38,6 @@ void CarWasher::init(){
 }
 
 void CarWasher::goToSleep(){
-    lcd->printText("gn");
     attachInterrupt(digitalPinToInterrupt(PIR_PIN), wake, RISING); 
     delay(100);
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);  
@@ -96,7 +95,7 @@ void CarWasher::setCarDetectedForCheckInState(){
 void CarWasher::setEnteringWashingAreaState(){
     state = ENTERING_WASHING_AREA;
     led01->switchOff();
-    this->printOnLcd("Proceed to the\n washing area");
+    this->printOnLcd("Proceed to the washing area");
 }
 void CarWasher::setReadyToWashState(){
     state = READY_TO_WASH;
@@ -104,18 +103,18 @@ void CarWasher::setReadyToWashState(){
     this->printOnLcd("Ready to wash"); 
 }
 void CarWasher::setWashingState(){
-    lcd->printText("progress: ");
+    lcd->printText("Progress: ");
     state = WASHING;
 }
 void CarWasher::setLeavingWashingAreaState(){
     state = LEAVING_WASHING_AREA;
     led02->switchOff();
     led03->switchOn();
-    this->printOnLcd("Washing complete,\n you can leave the area");
+    this->printOnLcd("Washing complete, you can leave the area");
 }
 void CarWasher::setMaintenaceState(){
     state = MAINTENANCE;
-    this->printOnLcd("Detected a problem \n- please wait");
+    this->printOnLcd("Detected a problem- please wait");
 }
 
 void CarWasher::samplePresence(){
@@ -130,8 +129,6 @@ void CarWasher::sampleTemperature(){
 }
 
 void CarWasher::printOnLcd(String text){
-    lcd->clearDisplay();
-    lcd->setCursor(0, 0);
     lcd->printText(text);
 }
 

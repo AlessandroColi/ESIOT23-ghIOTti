@@ -1,7 +1,7 @@
 #ifndef __GATE_CONTROL_TASK__
 #define __GATE_CONTROL_TASK__
 
-#define OPEN_POS 180
+#define OPEN_POS 100
 #define CLOSE_POS 0
 
 #include "Task.h"
