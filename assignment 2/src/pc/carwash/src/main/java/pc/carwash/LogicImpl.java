@@ -7,6 +7,7 @@ public class LogicImpl implements Logic{
     private int totalWashes = 0;
     private CarWasherState state = CarWasherState.WAITING_FOR_CAR;
     private double temperature = 0;
+    private boolean new_msg_found = false;
 
     public LogicImpl() throws Exception {}
 
@@ -27,9 +28,12 @@ public class LogicImpl implements Logic{
 
     @Override
     public void update() throws InterruptedException {
+        new_msg_found = false;
         while( serial.isMsgAvailable() ){
             unpackString(serial.receiveMsg());
+            new_msg_found = true;
         }
+        if (!new_msg_found) state=CarWasherState.WAITING_FOR_CAR;
     }
 
     @Override

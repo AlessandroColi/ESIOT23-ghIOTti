@@ -83,6 +83,7 @@ void CarWasher::setWaitingForCarState(){
     state = WAITING_FOR_CAR;
     led03->switchOff();
     lcd->clearDisplay();
+    delayMicroseconds(500);
     cardDetectedWhileWaiting = false;
     goToSleep();
 }

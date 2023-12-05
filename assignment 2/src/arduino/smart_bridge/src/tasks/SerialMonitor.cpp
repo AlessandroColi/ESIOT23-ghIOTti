@@ -5,11 +5,12 @@ SerialMonitor:: SerialMonitor( CarWasher* pcw){
     this->pCarWasher = pcw; 
 }
 
-void SerialMonitor::init(){
+void SerialMonitor::init(int period){
+  Task::init(period);
   Serial.begin(9600);
 }
 
-void SerialMonitor:: update(){
+void SerialMonitor:: tick(){
     pCarWasher->sampleTemperature();
     String msg = stateAsString() + ":" + pCarWasher->getCurrentTemperature();
     Serial.println(msg);
@@ -24,7 +25,6 @@ String SerialMonitor:: getMsg(){
     while (Serial.available() > 0) {
         char c = Serial.read();  //gets one byte from serial buffer
         msg += c; 
-        //delay to allow buffer to fill 
     }
     return msg ;
 }
