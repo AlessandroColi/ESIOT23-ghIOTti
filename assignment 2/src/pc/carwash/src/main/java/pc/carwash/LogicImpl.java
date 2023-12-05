@@ -5,7 +5,7 @@ public class LogicImpl implements Logic{
     private static String PORT = "COM6";
     private final SerialCommChannel serial = new SerialCommChannel(PORT ,9600);
     private int totalWashes = 0;
-    private CarWasherState state = CarWasherState.MAINTENANCE;
+    private CarWasherState state = CarWasherState.WAITING_FOR_CAR;
     private double temperature = 0;
 
     public LogicImpl() throws Exception {}
@@ -27,7 +27,7 @@ public class LogicImpl implements Logic{
 
     @Override
     public void update() throws InterruptedException {
-        if( serial.isMsgAvailable() ){
+        while( serial.isMsgAvailable() ){
             unpackString(serial.receiveMsg());
         }
     }
@@ -41,7 +41,6 @@ public class LogicImpl implements Logic{
     private void unpackString(String input) {
         // Split the input string using ":" as the delimiter format is state:Temperature
         String[] parts = input.split(":");
-
         if (parts.length == 2) {
             try {
                 String stringValue = parts[0];
@@ -56,7 +55,7 @@ public class LogicImpl implements Logic{
                 System.out.println("Error parsing values: " + e.getMessage());
             }
         } else {
-            System.out.println("Invalid input format");
+            System.out.println("Invalid input format" + input + "->" + parts);
         }
     }
 
@@ -70,7 +69,7 @@ public class LogicImpl implements Logic{
             case "LEAVING_WASHING_AREA" -> CarWasherState.LEAVING_WASHING_AREA;
             case "CHECK_OUT" -> CarWasherState.CHECK_OUT;
             case "MAINTENANCE" -> CarWasherState.MAINTENANCE;
-            default -> throw new IllegalArgumentException(stringValue + "State does not exist");
+            default -> null;
         };
     }
 }
