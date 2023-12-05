@@ -53,7 +53,7 @@ void GateControlTask::tick(){
     }
 }
 
-bool GateControlTask::CheckTimeElapsed(long timeRequired) {
+bool GateControlTask::CheckTimeElapsed(unsigned long timeRequired) {
     return (millis() - atRightDistTime) >= timeRequired;
 }
 
@@ -62,7 +62,7 @@ void GateControlTask::OpenGate() {
     internal_state = OPEN;
 }
 
-bool GateControlTask::CloseGate() {
+void GateControlTask::CloseGate() {
     pCarWasher->setServoPosition(CLOSE_POS);
     internal_state = CLOSE;
 }

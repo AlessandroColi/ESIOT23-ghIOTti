@@ -12,12 +12,12 @@ class GateControlTask: public Task {
   CarWasher* pCarWasher;
   BlinkingTask* pBlinkingTask;
   
-  long atRightDistTime;
+  unsigned long atRightDistTime;
   enum { OPEN, CLOSE, WAITING_TO_CLOSE } internal_state;
 
-  bool CheckTimeElapsed(long timeRequired);
+  bool CheckTimeElapsed(unsigned long timeRequired);
   void OpenGate();
-  bool CloseGate();
+  void CloseGate();
 
 public:
   GateControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask);
