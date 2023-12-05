@@ -4,12 +4,12 @@
 #include "Task.h"
 #include "model/CarWasher.h"
 
-class SerialMonitor: public Task {
+class SerialMonitorTask: public Task {
 
     CarWasher* pCarWasher;
 
     public:
-    SerialMonitor( CarWasher* pcw);
+    SerialMonitorTask( CarWasher* pcw);
     void init(int period);
     void tick();
     bool isMsgAvailable();

@@ -2,7 +2,7 @@
 
 #include "config.h"
 
-WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask, SerialMonitor* pSerialMonitor): 
+WashControlTask::WashControlTask(CarWasher* pCarWasher, BlinkingTask* pBlinkingTask, SerialMonitorTask* pSerialMonitor): 
         pCarWasher(pCarWasher), pBlinkingTask(pBlinkingTask),pSerialMonitor(pSerialMonitor) {
     internal_state = WAITING;
     washingTimeElapsed = 0;

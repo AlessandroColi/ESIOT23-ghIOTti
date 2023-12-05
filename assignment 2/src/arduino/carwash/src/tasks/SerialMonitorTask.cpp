@@ -1,26 +1,26 @@
-#include "SerialMonitor.h"
+#include "SerialMonitorTask.h"
 
 
-SerialMonitor:: SerialMonitor( CarWasher* pcw){
+SerialMonitorTask:: SerialMonitorTask( CarWasher* pcw){
     this->pCarWasher = pcw; 
 }
 
-void SerialMonitor::init(int period){
+void SerialMonitorTask::init(int period){
   Task::init(period);
   Serial.begin(9600);
 }
 
-void SerialMonitor:: tick(){
+void SerialMonitorTask::tick(){
     pCarWasher->sampleTemperature();
     String msg = stateAsString() + ":" + pCarWasher->getCurrentTemperature();
     Serial.println(msg);
 }
 
-bool SerialMonitor:: isMsgAvailable(){
+bool SerialMonitorTask::isMsgAvailable(){
     return Serial.available()>0;
 }
     
-String SerialMonitor:: getMsg(){
+String SerialMonitorTask::getMsg(){
     String msg = "";
     while (Serial.available() > 0) {
         char c = Serial.read();  //gets one byte from serial buffer
@@ -29,7 +29,7 @@ String SerialMonitor:: getMsg(){
     return msg ;
 }
 
-String SerialMonitor:: stateAsString(){
+String SerialMonitorTask::stateAsString(){
     String msg;
     if(pCarWasher->isWaitingForCarState()) msg="WAITING_FOR_CAR";
     else if(pCarWasher->isCarDetectedForCheckInState()) msg="CAR_DETECTED_FOR_CHECK_IN";

@@ -5,11 +5,22 @@
 #include "tasks/DetectionTask.h"
 #include "tasks/GateControlTask.h"
 #include "tasks/WashControlTask.h"
-#include "tasks/SerialMonitor.h"
+#include "tasks/SerialMonitorTask.h"
+
+/*
+/*this assignments has been done as a group by:
+ Coli Alessandro: alessandro.coli2@studio.unibo.it
+ Giangiulli Chiara: chiara.giangiulli@studio.unibo.it
+ Pisoni Giovanni: giovanni.pisoni@studio.unibo.it
+ Terenzi Mirco: mirco.terenzi@studio.unibo.it
+ 
+ Link for the demonstration video: 
+ https://liveunibo-my.sharepoint.com/:v:/g/personal/giovanni_pisoni_studio_unibo_it/EeLdtzAueyVKiL9ohLCltgoBZAEwALgI1wfhkAjFeqOyNg?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=5HOnat 
+*/
 
 Scheduler scheduler;
 CarWasher* pCarWasher;
-SerialMonitor* pSerialMonitor;
+SerialMonitorTask* pSerialMonitor;
 
 
 void setup() {
@@ -17,7 +28,7 @@ void setup() {
   pCarWasher = new CarWasher();
   pCarWasher->init();
   
-  pSerialMonitor = new SerialMonitor(pCarWasher);
+  pSerialMonitor = new SerialMonitorTask(pCarWasher);
   pSerialMonitor->init(100);
 
   BlinkingTask* pBlinkingTask = new BlinkingTask(LED02_PIN);
