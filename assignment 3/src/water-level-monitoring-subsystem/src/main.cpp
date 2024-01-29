@@ -1,18 +1,18 @@
 #include <Arduino.h>
+#include <task.h>
+#include "tasks.h"
 
-// put function declarations here:
-int myFunction(int, int);
+
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+
+    TaskHandle_t Task1;
+    Serial.begin(115200); 
+
+    xTaskCreatePinnedToCore(tasks::monitoringTask,"Task1",10000,NULL,1,&Task1,0);                         
+
+
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
 }
