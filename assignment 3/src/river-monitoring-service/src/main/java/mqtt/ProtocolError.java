@@ -1,19 +1,20 @@
+package mqtt;
 /**
  * Represents all the possible errors that a [Protocol] can raise.
  */
-public interface ProtocolError {
+public abstract class ProtocolError extends Throwable {
 
     /**
      * Error raised when the [Protocol] tries to communicate with an [entity] that is not registered.
      */
-    class EntityNotRegistered implements ProtocolError {
-        private final Entity entity;
+    static class EntityNotRegistered extends ProtocolError {
+        private final String entity;
 
-        public EntityNotRegistered(Entity entity) {
+        public EntityNotRegistered(String entity) {
             this.entity = entity;
         }
 
-        public Entity getEntity() {
+        public String getEntity() {
             return entity;
         }
     }
@@ -21,7 +22,7 @@ public interface ProtocolError {
     /**
      * Wrap the [exception] raised by the [Protocol] in a [ProtocolError].
      */
-    class ProtocolException implements ProtocolError {
+    static class ProtocolException extends ProtocolError {
         private final Throwable exception;
 
         public ProtocolException(Throwable exception) {
