@@ -18,20 +18,20 @@ public class MqttProtocol implements Protocol {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private final MutableSharedFlow<ByteArray> defaultFlow = new MutableSharedFlow<>(1);
-    private final MutableMap<Pair<Entity, Entity>, String> registeredTopics = new HashMap<>();
+    private final MutableMap<Pair<String, String>, String> registeredTopics = new HashMap<>();
     private final MutableMap<String, MutableSharedFlow<ByteArray>> topicChannels = new HashMap<>();
 
     private MqttAsyncClient mqttClient;
 
     @Override
-    public Flow<ByteArray> readFromChannel(Entity from, Entity to) {
+    public Flow<ByteArray> readFromChannel(String from, String to) {
         String candidateTopic = registeredTopics.get(new Pair<>(from, to));
         MutableSharedFlow<ByteArray> channel = topicChannels.get(candidateTopic);
         return channel != null ? channel.asSharedFlow() : defaultFlow.asSharedFlow();
     }
 
     @Override
-    public void setupChannel(Entity source, Entity destination) {
+    public void setupChannel(String source, String destination) {
         registeredTopics.put(new Pair<>(source, destination), toTopics(source, destination));
         registeredTopics.put(new Pair<>(destination, source), toTopics(destination, source));
         topicChannels.put(toTopics(source, destination), new MutableSharedFlow<>(1));
@@ -39,11 +39,11 @@ public class MqttProtocol implements Protocol {
     }
 
     @Override
-    public void writeToChannel(Entity from, Entity to, byte[] message) {
+    public void writeToChannel(String from, String to, byte[] message) {
         String topic = registeredTopics.get(new Pair<>(from, to));
 
         if (topic == null) {
-            throw new ProtocolError.EntityNotRegistered(to);
+            throw new ProtocolError.StringNotRegistered(to);
         }
 
         MqttMessage mqttMessage = new MqttMessage(message);
@@ -102,11 +102,11 @@ public class MqttProtocol implements Protocol {
         }
     }
 
-    private String toTopics(Entity source, Entity destination) {
+    private String toTopics(String source, String destination) {
         if (source.getId() != null && destination.getId() != null) {
-            return "RiverMonitoring/" + source.getEntityName() + "/" + destination.getEntityName();
+            return "RiverMonitoring/" + source.getStringName() + "/" + destination.getStringName();
         } else {
-            return "RiverMonitoring/" + source.getEntityName() + "/" + destination.getEntityName();
+            return "RiverMonitoring/" + source.getStringName() + "/" + destination.getStringName();
         }
     }
 
