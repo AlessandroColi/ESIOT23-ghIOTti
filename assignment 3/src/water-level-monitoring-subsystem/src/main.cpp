@@ -96,7 +96,7 @@ void reconnect() {
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.subscribe(toTopics("RiverMonitoring/+/+")); //subscribe to all topics related to this project
+      client.subscribe("RiverMonitoring/+/+"); //subscribe to all topics related to this project
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -138,7 +138,9 @@ void loop() {
     lastMsgTime = now;
 
     /* creating a msg in the buffer */
-    snprintf (msg1, MSG_BUFFER_SIZE,waterLevel);
+    char wl[50];
+    dtostrf(waterLevel,10,2,wl);
+    snprintf (msg1, MSG_BUFFER_SIZE, wl);
 
     Serial.println(String("Publishing message: ") + msg1);
     
