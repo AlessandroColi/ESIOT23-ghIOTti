@@ -4,8 +4,8 @@
 #include <LiquidCrystal_I2C.h>
 #include "Arduino.h"
 
-class Lcd {
-    
+class Lcd 
+{    
     public:
         Lcd();
         void printText(String text);

@@ -1,8 +1,8 @@
 #ifndef __POTENTIOMETER__
 #define __POTENTIOMETER__
 
-class Potentiometer {
-
+class Potentiometer 
+{
     public:
         Potentiometer(int pin);
         int getValue();
