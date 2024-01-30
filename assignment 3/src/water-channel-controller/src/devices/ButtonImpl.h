@@ -7,8 +7,8 @@ class ButtonImpl : public Button
 {
     public:
         ButtonImpl(int pin);
-        bool isPressed() = 0;
-        bool isClicked() = 0;
+        bool isPressed();
+        bool isClicked();
 
         void sync();
     
