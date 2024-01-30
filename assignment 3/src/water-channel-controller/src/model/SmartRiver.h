@@ -16,7 +16,7 @@ class SmartRiver
         void writeOnLCD(String text);
         void servoOn();
         void servoOff();
-        void setServoPosition(int percentageAngle);
+        void setServoPosition(int angle);
     
     private:
         double distance;

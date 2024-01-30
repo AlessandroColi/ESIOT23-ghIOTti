@@ -41,8 +41,8 @@ void SmartRiver::servoOff()
     servoMotor->off();
 }
 
-void SmartRiver::setServoPosition(int percentageAngle) 
+void SmartRiver::setServoPosition(int angle) 
 {
-    servoMotor->setPosition(percentageAngle);
+    servoMotor->setPosition(angle);
 }
 
