@@ -1,10 +1,6 @@
 #ifndef __CONFIG__
 #define __CONFIG__
 
-// leds
-
-#define RED_LED_PIN 1
-
 // buttons and potentiometers
 #define BUTTON_PIN 2
 #define POT_PIN A0
