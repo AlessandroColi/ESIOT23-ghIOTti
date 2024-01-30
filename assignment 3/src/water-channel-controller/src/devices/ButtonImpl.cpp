@@ -1,21 +1,25 @@
 #include "ButtonImpl.h"
 #include "Arduino.h"
 
-ButtonImpl::ButtonImpl(int pin) {
+ButtonImpl::ButtonImpl(int pin) 
+{
     this->pin = pin;
     pinMode(pin, INPUT);
     sync();
 }
 
-bool ButtonImpl::isPressed() {
+bool ButtonImpl::isPressed() 
+{
     return pressed;
 }
 
-bool ButtonImpl::isClicked() {
+bool ButtonImpl::isClicked() 
+{
     return clicked;
 }
 
-void ButtonImpl::sync() {
+void ButtonImpl::sync() 
+{
     bool wasPressed = pressed;
     pressed = digitalRead(pin) == HIGH;
     if (!pressed) {
