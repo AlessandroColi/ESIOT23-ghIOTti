@@ -1,10 +1,14 @@
 package mqtt;
 
-import org.eclipse.paho.mqttv5.client.*;
-import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
-import org.eclipse.paho.mqttv5.common.MqttException;
-import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.IMqttToken;
+import org.eclipse.paho.client.mqttv3.MqttCallback;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
+import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+
+
 import util.Pair;
 
 import java.util.HashMap;
@@ -68,20 +72,16 @@ public class MqttProtocol {
                     token.waitForCompletion();
 
                     MqttCallback callback = new MqttCallback() {
-                        @Override
-                        public void disconnected(MqttDisconnectResponse disconnectResponse) {
-
-                        }
 
                         @Override
-                        public void mqttErrorOccurred(MqttException exception) {
+                        public void connectionLost(Throwable throwable) {
 
                         }
 
                         @Override
                         public void messageArrived(String topic, MqttMessage message) {
                             byte[] payload = message.getPayload();
-                            requireNotNull(payload, "Message cannot be null");
+                            requireNotNull(payload);
                             SubmissionPublisher<byte[]> channel = topicChannels.get(topic);
                             if (channel != null) {
                                 channel.submit(payload);
@@ -89,17 +89,7 @@ public class MqttProtocol {
                         }
 
                         @Override
-                        public void deliveryComplete(IMqttToken token) {
-
-                        }
-
-                        @Override
-                        public void connectComplete(boolean reconnect, String serverURI) {
-
-                        }
-
-                        @Override
-                        public void authPacketArrived(int reasonCode, MqttProperties properties) {
+                        public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
 
                         }
                     };
@@ -131,16 +121,15 @@ public class MqttProtocol {
         return "RiverMonitoring/" + source + "/" + destination;
     }
 
-    private MqttConnectionOptions createConnectionOptions() {
-        MqttConnectionOptions options = new MqttConnectionOptions();
-        options.setCleanStart(false);
+    private MqttConnectOptions createConnectionOptions() {
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setCleanSession(false);  // Equivalent to setCleanStart(false) in MQTT v5
         return options;
     }
 
-    private static <T> T requireNotNull(T value, String message) {
+    private static <T> void requireNotNull(T value) {
         if (value == null) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException("Message cannot be null");
         }
-        return value;
     }
 }
