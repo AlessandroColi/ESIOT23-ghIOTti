@@ -5,7 +5,8 @@
 #include <PubSubClient.h>
 #define MSG_BUFFER_SIZE  50
 
-double waterLevel;
+bool working = false;
+extern double waterLevel;
 
 /* wifi network info */
 
@@ -21,8 +22,6 @@ const char* topic2 = "frequency";
 
 /* MQTT client management */
 
-/* MQTT client management */
-
 WiFiClient espClient;
 PubSubClient client(espClient);
 
@@ -32,6 +31,7 @@ char msg1[MSG_BUFFER_SIZE];
 
 
 TaskHandle_t Task1;
+TaskHandle_t Task2;
 
 void setup_wifi() {
 
@@ -91,16 +91,22 @@ void setup() {
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
 
-    xTaskCreatePinnedToCore(tasks::monitoringTask,"Task1",10000,NULL,1,&Task1,0);                         
-
-
+    xTaskCreatePinnedToCore(tasks::monitoringTask,"Task1",10000,NULL,1,&Task1,0);
+    xTaskCreatePinnedToCore(tasks::ledControlTask,"Task2",10000,NULL,1,&Task2,0);
 }
 
 void loop() {
+
+    if (WiFi.status() == WL_CONNECTED && client.connected()) {
+        working = true;
+    } else {
+        working = false;
+    }
+
     if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+        reconnect();
+    }
+    client.loop();
 
   unsigned long now = millis();
   if (now - lastMsgTime > 10000) {
@@ -112,6 +118,7 @@ void loop() {
     Serial.println(String("Publishing message: ") + msg1);
     
     /* publishing the msg */
-    client.publish(topic1, msg1);  
+    client.publish(topic1, msg1); 
   }
 }
+
