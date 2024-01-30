@@ -3,10 +3,10 @@
 
 #include "ServoMotor.h"
 #include <arduino.h>
-#include <ServoTimer2.h>
+#include "ServoTimer2.h"
 
-class ServoMotorImpl : public ServoMotor {
-    
+class ServoMotorImpl : public ServoMotor 
+{
     public:
         ServoMotorImpl(int pin);
         void on();
