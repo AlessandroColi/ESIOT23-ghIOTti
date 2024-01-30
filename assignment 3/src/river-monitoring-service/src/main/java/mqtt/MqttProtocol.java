@@ -1,45 +1,44 @@
-import org.eclipse.paho.mqttv5.client.IMqttToken;
-import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
-import org.eclipse.paho.mqttv5.client.MqttCallback;
-import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
+package mqtt;
+
+import org.eclipse.paho.mqttv5.client.*;
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.packet.MqttProperties;
+import util.Pair;
+
+import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.SubmissionPublisher;
 
-public class MqttProtocol implements Protocol {
+public class MqttProtocol {
 
     private final String host = "test.mosquitto.org";
     private final int port = 1883;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-    private final MutableSharedFlow<ByteArray> defaultFlow = new MutableSharedFlow<>(1);
-    private final MutableMap<Pair<Entity, Entity>, String> registeredTopics = new HashMap<>();
-    private final MutableMap<String, MutableSharedFlow<ByteArray>> topicChannels = new HashMap<>();
+    private final SubmissionPublisher<byte[]> defaultFlow = new SubmissionPublisher<>();
+    private final HashMap<Pair<String, String>, String> registeredTopics = new HashMap<>();
+    private final HashMap<String, SubmissionPublisher<byte[]>> topicChannels = new HashMap<>();
 
     private MqttAsyncClient mqttClient;
 
-    @Override
-    public Flow<ByteArray> readFromChannel(Entity from, Entity to) {
+    public SubmissionPublisher<byte[]> readFromChannel(String from, String to) {
         String candidateTopic = registeredTopics.get(new Pair<>(from, to));
-        MutableSharedFlow<ByteArray> channel = topicChannels.get(candidateTopic);
-        return channel != null ? channel.asSharedFlow() : defaultFlow.asSharedFlow();
+        SubmissionPublisher<byte[]> channel = topicChannels.get(candidateTopic);
+        return channel != null ? channel : defaultFlow;
     }
 
-    @Override
-    public void setupChannel(Entity source, Entity destination) {
+    public void setupChannel(String source, String destination) {
         registeredTopics.put(new Pair<>(source, destination), toTopics(source, destination));
         registeredTopics.put(new Pair<>(destination, source), toTopics(destination, source));
-        topicChannels.put(toTopics(source, destination), new MutableSharedFlow<>(1));
-        topicChannels.put(toTopics(destination, source), new MutableSharedFlow<>(1));
+        topicChannels.put(toTopics(source, destination), new SubmissionPublisher<>());
+        topicChannels.put(toTopics(destination, source), new SubmissionPublisher<>());
     }
 
-    @Override
-    public void writeToChannel(Entity from, Entity to, byte[] message) {
+    public void writeToChannel(String from, String to, byte[] message) throws ProtocolError {
         String topic = registeredTopics.get(new Pair<>(from, to));
 
         if (topic == null) {
@@ -54,7 +53,7 @@ public class MqttProtocol implements Protocol {
                 IMqttToken token = mqttClient.publish(topic, mqttMessage);
                 token.waitForCompletion();
             } catch (MqttException e) {
-                throw new ProtocolError.ProtocolException(e);
+                throw new RuntimeException(new ProtocolError.ProtocolException(e));
             }
         });
     }
@@ -63,51 +62,73 @@ public class MqttProtocol implements Protocol {
         try {
             mqttClient = new MqttAsyncClient("tcp://" + host + ":" + port, "MqttProtocol Test", new MemoryPersistence());
 
-            Future<?> result = executorService.submit(() -> {
+            executorService.submit(() -> {
                 try {
                     IMqttToken token = mqttClient.connect(createConnectionOptions());
                     token.waitForCompletion();
 
                     MqttCallback callback = new MqttCallback() {
                         @Override
+                        public void disconnected(MqttDisconnectResponse disconnectResponse) {
+
+                        }
+
+                        @Override
+                        public void mqttErrorOccurred(MqttException exception) {
+
+                        }
+
+                        @Override
                         public void messageArrived(String topic, MqttMessage message) {
                             byte[] payload = message.getPayload();
                             requireNotNull(payload, "Message cannot be null");
-                            topicChannels.get(topic).tryEmit(payload);
+                            SubmissionPublisher<byte[]> channel = topicChannels.get(topic);
+                            if (channel != null) {
+                                channel.submit(payload);
+                            }
+                        }
+
+                        @Override
+                        public void deliveryComplete(IMqttToken token) {
+
+                        }
+
+                        @Override
+                        public void connectComplete(boolean reconnect, String serverURI) {
+
+                        }
+
+                        @Override
+                        public void authPacketArrived(int reasonCode, MqttProperties properties) {
+
                         }
                     };
 
                     mqttClient.setCallback(callback);
                     mqttClient.subscribe(new String[]{"RiverMonitoring/+/+"}, new int[]{1}).waitForCompletion();
                 } catch (MqttException e) {
-                    throw new ProtocolError.ProtocolException(e);
+                    throw new RuntimeException(new ProtocolError.ProtocolException(e));
                 }
             });
 
-            result.get(); // Wait for initialization to complete
-
         } catch (Exception e) {
-            throw new ProtocolError.ProtocolException(e);
+            throw new RuntimeException(new ProtocolError.ProtocolException(e));
         }
     }
 
-    public void finalize() {
+    public void disconnect() {
         try {
             mqttClient.disconnect();
             mqttClient.close();
             executorService.shutdownNow();
 
         } catch (MqttException e) {
-            throw new ProtocolError.ProtocolException(e);
+            throw new RuntimeException(new ProtocolError.ProtocolException(e));
         }
     }
 
-    private String toTopics(Entity source, Entity destination) {
-        if (source.getId() != null && destination.getId() != null) {
-            return "RiverMonitoring/" + source.getEntityName() + "/" + destination.getEntityName();
-        } else {
-            return "RiverMonitoring/" + source.getEntityName() + "/" + destination.getEntityName();
-        }
+    private String toTopics(String source, String destination) {
+        return "RiverMonitoring/" + source + "/" + destination;
     }
 
     private MqttConnectionOptions createConnectionOptions() {
