@@ -7,6 +7,7 @@
 
 bool working = false;
 extern double waterLevel;
+long updateFrequence = 100; //initialized at F1(to be decided the exact value);
 
 /* wifi network info */
 
@@ -14,11 +15,13 @@ const char* ssid = "";
 const char* password = "";
 
 /* MQTT server address */
-const char* mqtt_server = "broker.mqtt-dashboard.com";
+const char* mqtt_server = "test.mosquitto.org";
 
 /* MQTT topic */
-const char* topic1 = "water_level";
-const char* topic2 = "frequency";
+const char* backend = "backend";
+const char* esp = "esp32";
+
+/* MQTT client management */
 
 /* MQTT client management */
 
@@ -57,6 +60,27 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(String("Message arrived on [") + topic + "] len: " + length );
+  memcpy(&updateFrequence, payload, sizeof(long));
+}
+
+/* generate mqttTopic */
+char* toTopics(const char* source, const char* destination) {
+    // Calculate the length of the resulting string
+    size_t length = strlen("RiverMonitoring/") + strlen(source) + strlen("/") + strlen(destination) + 1;
+
+    // Allocate memory for the resulting string
+    char* result = (char*)malloc(length);
+
+    // Check for allocation failure
+    if (result == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+    // Construct the resulting string
+    snprintf(result, length, "RiverMonitoring/%s/%s", source, destination);
+
+    return result;
 }
 
 void reconnect() {
@@ -72,7 +96,7 @@ void reconnect() {
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.subscribe(topic1);
+      client.subscribe(toTopics("RiverMonitoring/+/+")); //subscribe to all topics related to this project
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -82,6 +106,7 @@ void reconnect() {
     }
   }
 }
+
 
 void setup() {
     
@@ -113,12 +138,12 @@ void loop() {
     lastMsgTime = now;
 
     /* creating a msg in the buffer */
-    snprintf (msg1, MSG_BUFFER_SIZE, "water level: %d", waterLevel);
+    snprintf (msg1, MSG_BUFFER_SIZE,waterLevel);
 
     Serial.println(String("Publishing message: ") + msg1);
     
     /* publishing the msg */
-    client.publish(topic1, msg1); 
+    client.publish(toTopics(esp,backend), msg1);  
   }
 }
 
