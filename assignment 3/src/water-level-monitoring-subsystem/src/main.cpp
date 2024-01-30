@@ -6,6 +6,7 @@
 #define MSG_BUFFER_SIZE  50
 
 double waterLevel;
+long updateFrequence = 100; //initialized at F1(to be decided the exact value);
 
 /* wifi network info */
 
@@ -57,6 +58,7 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(String("Message arrived on [") + topic + "] len: " + length );
+  memcpy(&updateFrequence, payload, sizeof(long));
 }
 
 /* generate mqttTopic */
