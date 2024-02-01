@@ -1,12 +1,12 @@
 #include "ValveTask.h"
 #include "StateTask.h"
 
-ValveTask::ValveTask(ServoMotor* servo, Potentiometer* pot, Lcd* lcd, SmartRiver* smartRiver) 
+ValveTask::ValveTask(ServoMotor* servo, Potentiometer* pot, Lcd* lcd, WaterController* waterController) 
 {
     this->servo = servo;
     this->pot = pot;
     this->lcd = lcd;
-    this->smartRiver = smartRiver;
+    this->waterController = waterController;
 }
 
 void ValveTask::init(int period) 
@@ -15,7 +15,7 @@ void ValveTask::init(int period)
     valveState = AUTOMATIC;
 }
 
-void ValveTask::tick(int percentageAngle) 
+void ValveTask::tick() 
 {
     if (automatic) 
     {
@@ -28,14 +28,15 @@ void ValveTask::tick(int percentageAngle)
     switch(valveState) 
     {
         case AUTOMATIC:
-            servo->setPosition(setAngle(percentageAngle));
-            lcd->video(percentageAngle, "AUTOMATIC");
+            servo->setPosition(setAngle(valvePosition));
+            lcd->video(valvePosition, "AUTOMATIC");
             lcd->clearDisplay();
             break;
         
         case MANUAL:
             int angle = map(pot->getValue(), 0, 1023, 0, 180);
-            servo->setPosition(setAngle(angle));
+            valvePosition = setAngle(angle);
+            servo->setPosition(valvePosition);
             lcd->video(angle, "MANUAL");
             break;
     }

@@ -3,18 +3,18 @@
 
 #include "Task.h"
 #include "../devices/ButtonImpl.h"
-#include "../model/SmartRiver.h"
+#include "../model/WaterController.h"
 
 bool automatic;
 
 class StateTask: public Task
 {
     public:
+        StateTask(WaterController* WaterController);
         void tick();
-        StateTask(SmartRiver* smartRiver);
 
     private:
-        SmartRiver* smartRiver;
+        WaterController* waterController;
 };
 
 #endif

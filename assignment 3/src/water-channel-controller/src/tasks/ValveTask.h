@@ -2,20 +2,20 @@
 #define __VALVETASK__
 
 #include "Task.h"
-#include "../devices/ServoMotorImpl.h"
 #include "../devices/Potentiometer.h"
-#include "../devices/Lcd.h"
-#include "../model/SmartRiver.h"
+#include "../model/WaterController.h"
+
+extern int valvePosition;
 
 class ValveTask: public Task 
 {
     public:
-        ValveTask(ServoMotor* servo, Potentiometer* pot, Lcd* lcd, SmartRiver* smartRiver);
+        ValveTask(ServoMotor* servo, Potentiometer* pot, Lcd* lcd, WaterController* WaterController);
         void init(int period);
-        void tick(int percentageAngle);
+        void tick();
 
     private:
-        SmartRiver* smartRiver;
+        WaterController* waterController;
         ServoMotor* servo;
         Potentiometer* pot;
         Lcd* lcd;
