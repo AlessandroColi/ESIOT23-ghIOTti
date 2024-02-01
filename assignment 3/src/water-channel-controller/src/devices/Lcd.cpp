@@ -24,7 +24,7 @@ void Lcd::clearDisplay()
 void Lcd::video(int value, String text) 
 {
     char buffer[20]; // 20 is the max length of the string
-    sprintf(buffer, "Current valve opening level: %d %", value);
+    sprintf(buffer, "Current valve opening level: %d%%", value);
 
     lcd.setCursor(0, 1);
     lcd.print(buffer);
