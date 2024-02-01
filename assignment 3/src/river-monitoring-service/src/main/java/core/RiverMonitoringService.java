@@ -1,6 +1,7 @@
 package core;
 
 import mqtt.*;
+import serial.*;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow;
@@ -10,6 +11,7 @@ public class RiverMonitoringService {
     private final static String backend = "backend";
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
+    private SerialCommunicator arduinoComm ; //TODO piso inizializza qua
     private final stateControl state = new stateControl();
 
     private boolean keepAlive = true;
@@ -51,6 +53,16 @@ public class RiverMonitoringService {
     }
 
     private void updateAll(int frequency, int level) {
+        updateEsp(frequency);
+        updateArduino(level);
+    }
+
+    private void updateArduino(int level) {
+        //TODO rivedere dopo impl della serial
+        arduinoComm.write(level);
+    }
+
+    private void updateEsp(int frequency) {
         try {
             espComm.writeToChannel(backend, esp, intToByteArray(frequency));
         } catch (ProtocolError e) {
