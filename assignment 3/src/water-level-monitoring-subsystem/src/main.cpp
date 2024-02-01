@@ -1,13 +1,14 @@
 #include <Arduino.h>
 #include <task.h>
-#include "tasks.h"
+#include "tasksImpl.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
 #define MSG_BUFFER_SIZE  50
 
-bool working = false;
-extern double waterLevel;
-long updateFrequence = 100; //initialized at F1(to be decided the exact value);
+
+double waterLevel;
+bool working;
+long updateFrequence;
 
 /* wifi network info */
 
@@ -116,8 +117,8 @@ void setup() {
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
 
-    xTaskCreatePinnedToCore(tasks::monitoringTask,"Task1",10000,NULL,1,&Task1,0);
-    xTaskCreatePinnedToCore(tasks::ledControlTask,"Task2",10000,NULL,1,&Task2,0);
+    xTaskCreatePinnedToCore(tasksImpl::monitoringTask,"Task1",10000,NULL,1,&Task1,0);
+    xTaskCreatePinnedToCore(tasksImpl::ledControlTask,"Task2",10000,NULL,1,&Task2,0);
 }
 
 void loop() {
