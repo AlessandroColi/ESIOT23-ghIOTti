@@ -1,16 +1,17 @@
-#ifndef __SMART_RIVER__
-#define __SMART_RIVER__
+#ifndef __WATER_CONTROLLER__
+#define __WATER_CONTROLLER__
 
 #include <Arduino.h>
-#include <devices/Button.h>
-#include <devices/LCD.h>
-#include <devices/ServoMotor.h>
-#include <devices/Potentiometer.h>
+#include "LiquidCrystal_I2C.h"
+#include "TimerOne.h"
+#include "devices/ButtonImpl.h"
+#include "devices/Lcd.h"
+#include "devices/ServoMotorImpl.h"
 
-class SmartRiver
+class WaterController
 {
     public:
-        SmartRiver();
+        WaterController(Button *button, ServoMotor *servoMotor, Lcd *lcd);
         void init();
         bool isButtonPressed();
         void writeOnLCD(String text);
@@ -25,7 +26,6 @@ class SmartRiver
         Button* button;
         Lcd* lcd;
         ServoMotor* servoMotor;
-        Potentiometer* potentiometer;
 };
 
 #endif
