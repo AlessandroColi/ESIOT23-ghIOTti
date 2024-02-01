@@ -2,6 +2,8 @@ package core;
 
 import mqtt.*;
 import serial.*;
+import http.*;
+import util.Pair;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.Flow;
@@ -11,7 +13,8 @@ public class RiverMonitoringService {
     private final static String backend = "backend";
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
-    private SerialCommunicator arduinoComm ; //TODO piso inizializza qua
+    private SerialCommunicator arduinoComm ; //TODO piso inizializza qua e rendi final
+    private HTTPcommunicator dashboardComm ; //TODO mirco iniziallizza qua e rendi final
     private final stateControl state = new stateControl();
 
     private boolean keepAlive = true;
@@ -28,8 +31,13 @@ public class RiverMonitoringService {
                     @Override
                     public void onNext(byte[] level) {
                         // Process the received message
-                        state.updateLevel(ByteBuffer.wrap(level).getDouble());
-                        updateAll(state.getUpdateFrequency(), state.getGateLevel());
+                        double waterLevel = ByteBuffer.wrap(level).getDouble();
+                        Pair<Boolean,Integer> manualOverride = dashboardComm.check();
+                        state.updateLevel(waterLevel);
+                        updateAll(state.getUpdateFrequency(),
+                                manualOverride.getFirst() ? manualOverride.getSecond() : state.getGateLevel(),
+                                waterLevel,
+                                state.getState());
                     }
 
                     @Override
@@ -52,9 +60,15 @@ public class RiverMonitoringService {
         }
     }
 
-    private void updateAll(int frequency, int level) {
+    private void updateAll(int frequency, int gateLevel, double waterLevel, String state) {
         updateEsp(frequency);
-        updateArduino(level);
+        updateArduino(gateLevel);
+        updateDashboard(state,waterLevel,gateLevel);
+    }
+
+    private void updateDashboard(String state, double waterLevel, int gateLevel) {
+        //TODO rivedere dopo iml di http
+        dashboardComm.write(waterLevel,gateLevel,state);
     }
 
     private void updateArduino(int level) {

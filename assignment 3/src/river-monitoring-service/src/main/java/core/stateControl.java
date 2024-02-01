@@ -30,4 +30,6 @@ public class stateControl {
         return state.gateLevel;
     }
 
+    public String getState() { return state.toString(); }
+
 }
