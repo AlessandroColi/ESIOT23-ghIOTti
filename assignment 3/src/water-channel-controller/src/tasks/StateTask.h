@@ -5,7 +5,7 @@
 #include "../devices/ButtonImpl.h"
 #include "../model/WaterController.h"
 
-bool automatic;
+extern bool automatic;
 
 class StateTask: public Task
 {

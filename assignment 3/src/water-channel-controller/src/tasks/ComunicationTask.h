@@ -3,7 +3,6 @@
 
 #include "Task.h"
 #include "./model/WaterController.h"
-#include <ArduinoJson.h>
 
 extern int valvePosition;
 extern bool automatic;

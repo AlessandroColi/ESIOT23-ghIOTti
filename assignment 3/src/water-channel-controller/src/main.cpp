@@ -4,7 +4,7 @@
 #include "tasks/Task.h"
 #include "tasks/StateTask.h"
 #include "tasks/ValveTask.h"
-#include "tasks/CominicationTask.h"
+#include "tasks/ComunicationTask.h"
 #include "config.h"
 
 Scheduler scheduler;
@@ -13,6 +13,8 @@ Lcd* lcd;
 Button* button;
 Potentiometer* potentiometer;
 ServoMotor* servoMotor;
+bool automatic = false;
+int valvePosition = 0;
 
 void setup() {
   scheduler.init(200);

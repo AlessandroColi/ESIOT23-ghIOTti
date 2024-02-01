@@ -1,4 +1,9 @@
-#include "CominicationTask.h"
+#include "ComunicationTask.h"
+
+ComunicationTask::ComunicationTask(WaterController* waterController) 
+{
+    this->waterController = waterController;
+}
 
 void ComunicationTask::init(int period) 
 {
@@ -13,20 +18,18 @@ void ComunicationTask::tick()
         valvePosition = getMessage().toInt();
     }
 
-    StaticJsonDocument<200> doc;
-
-    doc["valvePosition"] = valvePosition;
-
-    serializeJson(doc, Serial);
-    Serial.println("");
+    Serial.print("{");
+    Serial.print("\"valvePosition\":");
+    Serial.print(valvePosition);
+    Serial.println("}");
 }
 
-bool ComunicationTask::isMessageAvailable() 
+bool ComunicationTask::isMessageAvailable()
 {
     return Serial.available() > 0;
 }
 
-String ComunicationTask::getMessage() 
+String ComunicationTask::getMessage()
 {
     String message = "";
     char character;

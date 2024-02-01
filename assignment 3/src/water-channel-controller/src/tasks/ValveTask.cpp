@@ -42,7 +42,7 @@ void ValveTask::tick()
     }
 }
 
-int setAngle(int percentage) 
+int ValveTask::setAngle(int percentage)
 {
-    return percentage*180/100;
+    return percentage * 180 / 100;
 }
