@@ -14,7 +14,7 @@ public class RiverMonitoringService {
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
     private SerialCommunicator arduinoComm ; //TODO piso inizializza qua e rendi final
-    private HTTPcommunicator dashboardComm ; //TODO mirco iniziallizza qua e rendi final
+    private final Communicator dashboardComm = new HttpCommunicator("http://localhost:3030");
     private final stateControl state = new stateControl();
 
     private boolean keepAlive = true;
