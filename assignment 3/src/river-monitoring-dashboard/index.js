@@ -9,14 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("valveLevel", document.getElementById("valveLevelInput").value)
         
         fetch(BASE_PATH + "/api/room", {
-            mode: "cors"
+            method: 'POST',
+            mode: "cors",
+            body: formData
         })
 
     })
 })
 
 // Fetch the data
-fetch(BASE_PATH + "/api/room", {mode: 'cors'}).then(res => res.json())
+fetch(BASE_PATH + "/api/room", {
+    mode: 'cors'
+    })
+    .then(res => res.json())
     .then((data) => {
         const waterLevelChart = document.getElementById('waterLevelTrend');
         const systemStateDisplay = document.getElementById('systemState');
