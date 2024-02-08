@@ -16,12 +16,8 @@ void ComunicationTask::tick()
     if (isMessageAvailable()) 
     {
         valvePosition = getMessage().toInt();
+        Serial.println(valvePosition);
     }
-
-    Serial.print("{");
-    Serial.print("\"valvePosition\":");
-    Serial.print(valvePosition);
-    Serial.println("}");
 }
 
 bool ComunicationTask::isMessageAvailable()
@@ -32,10 +28,10 @@ bool ComunicationTask::isMessageAvailable()
 String ComunicationTask::getMessage()
 {
     String message = "";
-    char character;
-    while (Serial.available() > 0 && (character = Serial.read()) != '\n')  
+    int percentage;
+    while (Serial.available() > 0 && (percentage = Serial.read()) != '\n')  
     {
-        message += character;
+        message += char(percentage);
     }
     return message;
 }
