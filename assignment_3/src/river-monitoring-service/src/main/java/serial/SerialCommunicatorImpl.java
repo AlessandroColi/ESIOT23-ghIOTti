@@ -19,13 +19,12 @@ public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEve
         serialPort.setParams(rate,
                                 SerialPort.DATABITS_8,
                                 SerialPort.STOPBITS_1,
-                SerialPort.PARITY_NONE);
+                                SerialPort.PARITY_NONE);
                                 
         serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
                                             SerialPort.FLOWCONTROL_RTSCTS_OUT);
                                         
-        // serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
-        serialPort.addEventListener(this);
+        serialPort.addEventListener(this, SerialPort.MASK_RXCHAR);
     }
 
     @Override
@@ -50,15 +49,48 @@ public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEve
         return Optional.ofNullable(Integer.parseInt(queue.take()));
     }
 
-
-    @Override
-    public void serialEvent(SerialPortEvent serialPortEvent) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'serialEvent'");
+    public void close() {
+        try {
+            if (serialPort != null) {
+                serialPort.removeEventListener();
+                serialPort.closePort();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    private boolean isMsgPresent() {
-        return !queue.isEmpty() && (queue.peek().length() > 11);
+
+    @Override
+    public void serialEvent(SerialPortEvent event) {
+        if (event.isRXCHAR()) {
+            try {
+                String msg = serialPort.readString(event.getEventValue());
+
+                msg = msg.replaceAll("\r", "");
+
+                currentMsg.append(msg);
+
+                boolean goAhead = true;
+
+                while (goAhead) {
+                    String msg2 = currentMsg.toString();
+                    int index = msg2.indexOf("\n");
+                    if (index >= 0) {
+                        queue.put(msg2.substring(0, index));
+                        currentMsg = new StringBuffer("");
+                        if(index + 1 < msg2.length()) {
+                            currentMsg.append(msg2.substring(index + 1));
+                        }
+                    } else {
+                        goAhead = false;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error in receiving string from COM-port " + e);
+            }
+        }
     }
     
 }
