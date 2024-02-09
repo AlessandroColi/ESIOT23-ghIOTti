@@ -5,19 +5,19 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault()
 
         const formData = new FormData()
-        if (document.getElementById('controlTypeInput').value === "manual") {
-            formData.append("controlType", document.getElementById('controlTypeInput').value)
-            formData.append("valveValue", document.getElementById('valveLevelInput').value)
+        formData.append("controlType", document.getElementById('controlTypeInput').value)
+        formData.append("valveValue", document.getElementById('valveLevelInput').value)
+        
+        fetch(BASE_PATH + "/api/data", {
+            method: "POST",
+            mode: "cors", 
+            body: JSON.stringify(Object.fromEntries(formData))
+        })
+        
+        setTimeout(() => location.reload(), 200);
 
-            fetch(BASE_PATH + "/api/data", {
-                method: "POST",
-                mode: "cors", 
-                body: JSON.stringify(Object.fromEntries(formData))
-            })
-
-            setTimeout(() => { location.reload() }, 200);
-        } else {
-            window.alert("You can't update the valve level in automatic mode");
+        if (document.getElementById('controlTypeInput').value === "auto") {
+            window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.")
         }
     })
 })
