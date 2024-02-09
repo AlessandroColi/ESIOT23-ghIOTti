@@ -1,6 +1,6 @@
 package http;
 
-import util.Pair;
+import java.util.Optional;
 
 public interface Communicator {
     /*
@@ -11,5 +11,5 @@ public interface Communicator {
     left side rapresents if the gate level is set manually by the dashjboard
     right side rapresents the level set
      */
-    public Pair<Boolean,Integer> check();
+    public Optional<Integer> check();
 }

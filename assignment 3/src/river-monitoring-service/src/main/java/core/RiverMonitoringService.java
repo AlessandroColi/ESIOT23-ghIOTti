@@ -3,9 +3,9 @@ package core;
 import mqtt.*;
 import serial.*;
 import http.*;
-import util.Pair;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 import java.util.concurrent.Flow;
 
 public class RiverMonitoringService {
@@ -32,10 +32,9 @@ public class RiverMonitoringService {
                     public void onNext(byte[] level) {
                         // Process the received message
                         double waterLevel = ByteBuffer.wrap(level).getDouble();
-                        Pair<Boolean,Integer> manualOverride = dashboardComm.check();
                         state.updateLevel(waterLevel);
                         updateAll(state.getUpdateFrequency(),
-                                manualOverride.getFirst() ? manualOverride.getSecond() : state.getGateLevel(),
+                                getGateLevel(),
                                 waterLevel,
                                 state.getState());
                     }
@@ -58,6 +57,15 @@ public class RiverMonitoringService {
                 throw new RuntimeException("loop error: ",e);
             }
         }
+    }
+
+    private int getGateLevel() {
+
+        Optional<Integer> arduino = arduinoComm.get();
+        Optional<Integer> dashboard = dashboardComm.check();
+
+        return arduino.orElse(dashboard.orElse(state.getGateLevel()));
+
     }
 
     private void updateAll(int frequency, int gateLevel, double waterLevel, String state) {
