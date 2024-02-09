@@ -3,8 +3,8 @@ package http;
 import java.util.Optional;
 
 public interface Communicator {
+
     /**
-     * 
      * @param waterLevel
      * @param gateLevel
      * @param state
