@@ -23,8 +23,10 @@ public class HTTPcommunicator implements Communicator {
     @Override
     public void write(double waterLevel, int gateLevel, String state) {
         JsonObject item = new JsonObject();
-		item.put("value", 20 + Math.random()*5);
-		item.put("place","nowhere");
+		item.put("waterLevel", waterLevel);
+        item.put("valveValue", gateLevel);
+        item.put("state", state);
+        item.put("controlType", "auto");
 
 		client
 		.post(PORT, HOST, "/api/data")
@@ -44,7 +46,7 @@ public class HTTPcommunicator implements Communicator {
             .onSuccess(res -> {
                 System.out.println("Getting - Received response with status code: " + res.statusCode());
                 String controlType = res.bodyAsJsonArray().getJsonObject(0).getString("controlType");
-                if (controlType.equals("automatic")) {
+                if (controlType.equals("auto")) {
                     future.complete(Optional.of(res.bodyAsJsonArray().getJsonObject(0).getInteger("valveValue")));
                 } else {
                     future.complete(Optional.empty());
