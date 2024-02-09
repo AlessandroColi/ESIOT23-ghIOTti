@@ -15,7 +15,7 @@ Potentiometer* potentiometer;
 ServoMotor* servoMotor;
 
 void setup() {
-  scheduler.init(100);
+  scheduler.init(1000);
 
   Serial.begin(9600);
 
@@ -30,7 +30,7 @@ void setup() {
   Task* stateTask = new StateTask(waterController);
   Task* comunicationTask = new ComunicationTask(waterController);
 
-  stateTask->init(800);
+  stateTask->init(2000);
   valveTask->init(1000);
   comunicationTask->init(2000);
 
