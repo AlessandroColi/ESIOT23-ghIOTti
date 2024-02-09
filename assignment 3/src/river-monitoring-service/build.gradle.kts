@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
+    implementation("io.github.java-native:jssc:2.9.5")
 }
 
 tasks.test {
