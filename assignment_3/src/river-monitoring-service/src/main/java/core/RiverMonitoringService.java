@@ -60,11 +60,13 @@ public class RiverMonitoringService {
     }
 
     private int getGateLevel() {
-
-        Optional<Integer> arduino = arduinoComm.get();
-        Optional<Integer> dashboard = dashboardComm.check();
-
-        return arduino.orElse(dashboard.orElse(state.getGateLevel()));
+        try {
+            Optional<Integer> arduino = arduinoComm.get();
+            Optional<Integer> dashboard = dashboardComm.check();
+            return arduino.orElse(dashboard.orElse(state.getGateLevel()));
+        } catch (InterruptedException e) {
+            throw new RuntimeException("get gate level error: ", e);
+        }
 
     }
 
