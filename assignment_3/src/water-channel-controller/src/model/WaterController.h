@@ -7,25 +7,39 @@
 #include "devices/ButtonImpl.h"
 #include "devices/Lcd.h"
 #include "devices/ServoMotorImpl.h"
+#include <devices/Potentiometer.h>
 
 class WaterController
 {
     public:
-        WaterController(Button *button, ServoMotor *servoMotor, Lcd *lcd);
+        WaterController(Button *button, ServoMotor *servoMotor, Lcd *lcd, Potentiometer *pot);
         void init();
+
+        long getCurrentTime();
+        int getPotetiomenter();
+        int getValvePosition();
+        bool isAutomatic();
+
+        void setValvePosition(int position);
+        void setAutomatic(bool automatic);
+
         bool isButtonPressed();
-        void writeOnLCD(String text);
+
+        void writeOnLCD(int value, String text);
+
         void servoOn();
         void servoOff();
         void setServoPosition(int angle);
     
     private:
-        double distance;
         long time;
+        int valvePosition;
+        bool automatic;
         
         Button* button;
         Lcd* lcd;
         ServoMotor* servoMotor;
+        Potentiometer* pot;
 };
 
 #endif

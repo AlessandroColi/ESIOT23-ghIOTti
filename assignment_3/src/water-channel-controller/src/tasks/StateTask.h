@@ -10,8 +10,9 @@ extern bool automatic;
 class StateTask: public Task
 {
     public:
-        StateTask(WaterController* WaterController);
         void tick();
+        void init(int period);
+        StateTask(WaterController* WaterController);
 
     private:
         WaterController* waterController;

@@ -13,11 +13,9 @@ Lcd* lcd;
 Button* button;
 Potentiometer* potentiometer;
 ServoMotor* servoMotor;
-bool automatic = false;
-int valvePosition = 0;
 
 void setup() {
-  scheduler.init(200);
+  scheduler.init(100);
 
   Serial.begin(9600);
 
@@ -26,19 +24,19 @@ void setup() {
   lcd = new Lcd();
   button = new ButtonImpl(BUTTON_PIN);
 
-  waterController = new WaterController(button, servoMotor, lcd);
+  waterController = new WaterController(button, servoMotor, lcd, potentiometer);
 
+  Task *valveTask = new ValveTask(waterController);
   Task* stateTask = new StateTask(waterController);
-  Task* valveTask = new ValveTask(servoMotor, potentiometer, lcd, waterController); // Replace ValveTask with ValveTaskImpl
   Task* comunicationTask = new ComunicationTask(waterController);
 
-  valveTask->init(200);
-  stateTask->init(200);
-  comunicationTask->init(200);
+  stateTask->init(800);
+  valveTask->init(1000);
+  comunicationTask->init(2000);
 
-  scheduler.addTask(valveTask);
-  scheduler.addTask(stateTask);
   scheduler.addTask(comunicationTask);
+  scheduler.addTask(stateTask);
+  scheduler.addTask(valveTask);
 }
 
 void loop() {

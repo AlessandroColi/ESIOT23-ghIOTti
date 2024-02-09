@@ -10,21 +10,20 @@ extern int valvePosition;
 class ValveTask: public Task 
 {
     public:
-        ValveTask(ServoMotor* servo, Potentiometer* pot, Lcd* lcd, WaterController* WaterController);
+        ValveTask(WaterController* WaterController);
         void init(int period);
         void tick();
 
     private:
         WaterController* waterController;
-        ServoMotor* servo;
-        Potentiometer* pot;
-        Lcd* lcd;
         enum
         {
             AUTOMATIC,
             MANUAL
         } valveState;
-        int setAngle(int percentage);
+        int setAngle(int percentage) {
+            return percentage * 180 / 100;
+        }
 };
 
 #endif

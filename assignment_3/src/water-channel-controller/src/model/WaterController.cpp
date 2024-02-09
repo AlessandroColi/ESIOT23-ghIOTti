@@ -1,16 +1,50 @@
 #include "WaterController.h"
 
-WaterController::WaterController(Button* button, ServoMotor* servoMotor, Lcd* lcd) 
+WaterController::WaterController(Button* button, ServoMotor* servoMotor, Lcd* lcd, Potentiometer* pot) 
 {
     this->button = button;
     this->servoMotor = servoMotor;
     this->lcd = lcd;
+    this->pot = pot;
     this->init();
 }
 
 void WaterController::init() 
 {
-    this->servoOn();
+    servoMotor->on();
+    servoMotor->setPosition(0);
+    this->automatic = true;
+    this->valvePosition = 0;
+}
+
+long WaterController::getCurrentTime() 
+{
+    return time;
+}
+
+int WaterController::getPotetiomenter() 
+{
+    return map(pot->getValue(), 0, 1023, 0, 180);
+}
+
+int WaterController::getValvePosition() 
+{
+    return valvePosition;
+}
+
+bool WaterController::isAutomatic() 
+{
+    return automatic;
+}
+
+void WaterController::setValvePosition(int position) 
+{
+    this->valvePosition = position;
+}
+
+void WaterController::setAutomatic(bool automatic) 
+{
+    this->automatic = automatic;
 }
 
 bool WaterController::isButtonPressed() 
@@ -19,11 +53,11 @@ bool WaterController::isButtonPressed()
     return button->isPressed();
 }
 
-void WaterController::writeOnLCD(String text) 
+void WaterController::writeOnLCD(int value, String text) 
 {
     lcd->clearDisplay();
     lcd->setCursor(0, 0);
-    lcd->printText(text);
+    lcd->video(value, text);
 }
 
 void WaterController::servoOn() 

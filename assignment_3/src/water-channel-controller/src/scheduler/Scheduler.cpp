@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 #include <TimerOne.h>
 
-volatile bool timerFlag = false;
+volatile bool timerFlag;
 
 void timerHandler(void) 
 {
@@ -14,7 +14,7 @@ void Scheduler::init(int basePeriod)
     timerFlag = false;
     numTasks = 0;
     long period = 10001 * basePeriod;
-    Timer1.initialize(basePeriod);
+    Timer1.initialize(period);
     Timer1.attachInterrupt(timerHandler);
 }
 
