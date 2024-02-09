@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 mode: "cors", 
                 body: JSON.stringify(Object.fromEntries(formData))
             })
+
+            setTimeout(() => { location.reload() }, 200);
         } else {
             window.alert("You can't update the valve level in automatic mode");
         }
