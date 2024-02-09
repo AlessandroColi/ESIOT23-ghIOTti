@@ -3,6 +3,7 @@
 
 Potentiometer::Potentiometer(int pin) 
 {
+    this->pin = pin;
     pinMode(pin, INPUT);
 }
 
