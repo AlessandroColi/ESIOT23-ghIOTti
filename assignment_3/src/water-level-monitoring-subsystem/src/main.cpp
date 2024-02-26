@@ -3,20 +3,21 @@
 #include "tasksImpl.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <ArduinoJson.h>
 #define MSG_BUFFER_SIZE  50
 
 
 double waterLevel;
 bool working;
-long updateFrequence;
+long updateFrequence = 5000;
 
 /* wifi network info */
 
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "Blln";
+const char* password = "zxcvbnm.";
 
 /* MQTT server address */
-const char* mqtt_server = "test.mosquitto.org";
+const char* mqtt_server = "broker.mqtt-dashboard.com";
 
 /* MQTT topic */
 const char* backend = "backend";
@@ -38,9 +39,6 @@ TaskHandle_t Task1;
 TaskHandle_t Task2;
 
 void setup_wifi() {
-
-  delay(10);
-
   Serial.println(String("Connecting to ") + ssid);
 
   WiFi.mode(WIFI_STA);
@@ -61,7 +59,7 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(String("Message arrived on [") + topic + "] len: " + length );
-  memcpy(&updateFrequence, payload, sizeof(long));
+  //memcpy(&updateFrequence, payload, sizeof(long));
 }
 
 /* generate mqttTopic */
@@ -110,19 +108,18 @@ void reconnect() {
 
 
 void setup() {
-    
-    Serial.begin(115200); 
+    Serial.begin(9600); 
     setup_wifi();
     randomSeed(micros());
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
 
+    
     xTaskCreatePinnedToCore(tasksImpl::monitoringTask,"Task1",10000,NULL,1,&Task1,0);
-    xTaskCreatePinnedToCore(tasksImpl::ledControlTask,"Task2",10000,NULL,1,&Task2,0);
+    xTaskCreatePinnedToCore(tasksImpl::ledControlTask,"Task2",10000,NULL,1,&Task2,1);
 }
 
 void loop() {
-
     if (WiFi.status() == WL_CONNECTED && client.connected()) {
         working = true;
     } else {
@@ -135,7 +132,7 @@ void loop() {
     client.loop();
 
   unsigned long now = millis();
-  if (now - lastMsgTime > 10000) {
+  if (now - lastMsgTime > updateFrequence) {
     lastMsgTime = now;
 
     /* creating a msg in the buffer */
