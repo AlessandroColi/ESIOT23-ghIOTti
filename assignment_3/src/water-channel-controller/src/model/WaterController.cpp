@@ -56,9 +56,8 @@ bool WaterController::isButtonClicked()
 void WaterController::writeOnLCD(int value, String text) 
 {
     lcd->clearDisplay();
-    lcd->setCursor(0, 1);
     lcd->video(value, text);
-    Serial.println(text);
+    Serial.println("-");
 }
 
 void WaterController::servoOn() 
