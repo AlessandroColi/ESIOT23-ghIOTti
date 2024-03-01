@@ -1,8 +1,8 @@
 package core;
 public class config{
 
-    public static final int F1 = 100; //for normal state
-    public static final int F2 = 200; //for all other states
+    public static final int F1 = 1000; //for normal state
+    public static final int F2 = 500; //for all other states
     public static final int L0 = 0;  //valve opening level for ALARM-TOO-LOW state
     public static final int L1 = 25;  //valve opening level for normal state
     public static final int L2 = 50;  //valve opening level for ALARM-TOO-HIGH state

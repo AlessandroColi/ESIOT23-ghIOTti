@@ -9,7 +9,7 @@ public interface SerialCommunicator {
      *
      * Asynchronous model.
      *
-     * @param msg
+     * @param text
      */
     public void write(Integer text);
 
@@ -18,5 +18,5 @@ public interface SerialCommunicator {
      *
      * Blocking behaviour.
      */
-    public Optional<Integer> get() throws InterruptedException;
+    public Optional<String> get() throws InterruptedException;
 }

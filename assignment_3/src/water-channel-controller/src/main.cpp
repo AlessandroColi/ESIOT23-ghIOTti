@@ -30,9 +30,9 @@ void setup() {
   Task* stateTask = new StateTask(waterController);
   Task* comunicationTask = new ComunicationTask(waterController);
 
-  stateTask->init(800);
-  valveTask->init(1000);
-  comunicationTask->init(2000);
+  stateTask->init(300);
+  valveTask->init(500);
+  comunicationTask->init(1000);
 
   scheduler.addTask(comunicationTask);
   scheduler.addTask(stateTask);

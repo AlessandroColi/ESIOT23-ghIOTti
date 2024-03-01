@@ -7,11 +7,10 @@ import jssc.*;
 public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEventListener {
     
     private SerialPort serialPort;
-    private BlockingQueue<String> queue;
+    private String lastMsg = null;
     private StringBuffer currentMsg = new StringBuffer("");
 
     public SerialCommunicatorImpl(String portName, int rate) throws Exception{
-        queue = new ArrayBlockingQueue<String>(100);
         serialPort = new SerialPort(portName);
 
         serialPort.openPort();
@@ -45,8 +44,10 @@ public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEve
     }
 
     @Override
-    public Optional<Integer> get() throws InterruptedException {
-        return Optional.ofNullable(Integer.parseInt(queue.take()));
+    public Optional<String> get() throws InterruptedException {
+        String msg = lastMsg;
+        lastMsg = null;
+        return Optional.ofNullable(msg);
     }
 
     public void close() {
@@ -68,6 +69,7 @@ public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEve
                 String msg = serialPort.readString(event.getEventValue());
 
                 msg = msg.replaceAll("\r", "");
+                msg = msg.replaceAll(" ", "");
 
                 currentMsg.append(msg);
 
@@ -77,7 +79,7 @@ public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEve
                     String msg2 = currentMsg.toString();
                     int index = msg2.indexOf("\n");
                     if (index >= 0) {
-                        queue.put(msg2.substring(0, index));
+                        lastMsg = msg2.substring(0, index);
                         currentMsg = new StringBuffer("");
                         if(index + 1 < msg2.length()) {
                             currentMsg.append(msg2.substring(index + 1));
