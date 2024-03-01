@@ -12,9 +12,8 @@ void ServoMotorImpl::on()
     servo.attach(pin); //, 544, 2400);
 }
 
-void ServoMotorImpl::setPosition(int percentage) 
+void ServoMotorImpl::setPosition(int angle) 
 {
-    double angle = percentage * 1.8;
     // 750 -> 0, 2250 --> 180
     //750 + angle*(2250-750)/180
     // updated values: min is 544, max 2400 (see ServoTimer2 doc)

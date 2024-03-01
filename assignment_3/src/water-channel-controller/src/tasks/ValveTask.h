@@ -21,9 +21,6 @@ class ValveTask: public Task
             AUTOMATIC,
             MANUAL
         } valveState;
-        int setAngle(int percentage) {
-            return percentage * 180 / 100;
-        }
 };
 
 #endif

@@ -29,7 +29,7 @@ class WaterController
 
         void servoOn();
         void servoOff();
-        void setServoPosition(int angle);
+        void setServoPosition(int perc);
     
     private:
         long time;

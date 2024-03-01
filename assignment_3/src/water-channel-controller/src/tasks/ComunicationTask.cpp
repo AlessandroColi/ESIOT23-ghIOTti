@@ -19,7 +19,9 @@ void ComunicationTask::tick()
         String msg = getMessage();
         this->waterController->setServoPosition(msg.toInt());
     }
-    Serial.println(this->waterController->getValvePosition());
+    if( !this->waterController->isAutomatic()){
+        Serial.println(this->waterController->getValvePosition());
+    }
 }
 
 bool ComunicationTask::isMessageAvailable()

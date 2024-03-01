@@ -27,13 +27,13 @@ void ValveTask::tick()
         int valvePosition;
         case AUTOMATIC:
             valvePosition = waterController->getValvePosition();
-            waterController->setServoPosition(setAngle(valvePosition));
+            waterController->setServoPosition(valvePosition);
             waterController->writeOnLCD(valvePosition, "AUTOMATIC");
             break;
         
         case MANUAL:
-            valvePosition = waterController->getValvePosition();
-            waterController->setServoPosition(setAngle(valvePosition));
+            valvePosition = waterController->getPotetiomenter();
+            waterController->setServoPosition(valvePosition);
             waterController->writeOnLCD(valvePosition, "MANUAL");
             break;
     }

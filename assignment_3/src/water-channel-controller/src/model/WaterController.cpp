@@ -24,7 +24,16 @@ long WaterController::getCurrentTime()
 
 int WaterController::getPotetiomenter() 
 {
-    return map(pot->getValue(), 0, 1023, 0, 180);
+    int val = pot->getValue();
+    int perc = map(val, 0, 1023, 0, 100);
+
+    if( val < 10){
+        perc = 0;
+    }else if( val > 1010){
+        perc = 100;
+    }
+
+    return perc;
 }
 
 int WaterController::getValvePosition() 
@@ -55,9 +64,7 @@ bool WaterController::isButtonClicked()
 
 void WaterController::writeOnLCD(int value, String text) 
 {
-    lcd->clearDisplay();
     lcd->video(value, text);
-    Serial.println("-");
 }
 
 void WaterController::servoOn() 
@@ -70,8 +77,9 @@ void WaterController::servoOff()
     servoMotor->off();
 }
 
-void WaterController::setServoPosition(int angle) 
+void WaterController::setServoPosition(int perc) 
 {
-    servoMotor->setPosition(angle);
+    valvePosition = perc;
+    servoMotor->setPosition(map(perc,0,100,0,180));
 }
 
