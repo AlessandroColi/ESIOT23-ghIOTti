@@ -47,7 +47,7 @@ void WaterController::setAutomatic(bool automatic)
     this->automatic = automatic;
 }
 
-bool WaterController::isButtonPressed() 
+bool WaterController::isButtonClicked()
 {
     button->sync();
     return button->isPressed();

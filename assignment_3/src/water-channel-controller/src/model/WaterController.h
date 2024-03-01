@@ -23,7 +23,7 @@ class WaterController
         void setValvePosition(int position);
         void setAutomatic(bool automatic);
 
-        bool isButtonPressed();
+        bool isButtonClicked();
 
         void writeOnLCD(int value, String text);
 

@@ -11,6 +11,5 @@
 // LCD
 #define LCD_SDA_PIN A4
 #define LCD_SCL_PIN A5
-#define LCD_VCC 12
 
 #endif

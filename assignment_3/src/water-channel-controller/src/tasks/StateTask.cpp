@@ -12,7 +12,7 @@ void StateTask::init(int period)
 
 void StateTask::tick() 
 {
-    if (this->waterController->isButtonPressed()) 
+    if (this->waterController->isButtonClicked())
     {
         if (this->waterController->isAutomatic())
         {
