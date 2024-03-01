@@ -4,9 +4,9 @@ void tasksImpl::monitoringTask(void* parameter) {
   Sonar* pSonar = new Sonar(DIST_ECHO_PIN, DIST_TRIG_PIN, MAXTIME);
 
   for(;;) {
-    waterLevel = pSonar->getDistance();
-    delay(updateFrequence); 
-  }
+      waterLevel = pSonar->getDistance();
+      delay(100);
+    }
 }
 
 void tasksImpl::ledControlTask(void* parameter){
@@ -22,6 +22,7 @@ void tasksImpl::ledControlTask(void* parameter){
         greenLed->switchOff();
         redLed->switchOn(); 
       }
+    delay(100);
   }
 
 }
