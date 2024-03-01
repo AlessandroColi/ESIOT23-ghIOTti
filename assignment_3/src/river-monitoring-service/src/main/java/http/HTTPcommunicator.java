@@ -1,7 +1,6 @@
 package http;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
@@ -38,32 +37,6 @@ public class HTTPcommunicator implements Communicator {
 
     @Override
     public Optional<Integer> check() {
-        CompletableFuture<Optional<Integer>> future = new CompletableFuture<>();
-
-        client
-            .get(PORT, HOST, "/api/data")
-            .send()
-            .onSuccess(res -> {
-                System.out.println("Getting - Received response with status code: " + res.statusCode());
-                String controlType = res.bodyAsJsonArray().getJsonObject(0).getString("controlType");
-                if (controlType.equals("auto")) {
-                    future.complete(Optional.of(res.bodyAsJsonArray().getJsonObject(0).getInteger("valveValue")));
-                } else {
-                    future.complete(Optional.empty());
-                }
-                
-            })
-            .onFailure(err -> {
-                System.out.println("Something went wrong " + err.getMessage());
-                // Completa il future con Optional.empty() in caso di errore
-                future.complete(Optional.empty());
-            });
-
-        try {
-            return future.get();
-        } catch (Exception e) {
-            System.err.println("Exception while getting response: " + e.getMessage());
-            return Optional.empty();
-        }
+        return Optional.empty();    //TODO
     }
 }
