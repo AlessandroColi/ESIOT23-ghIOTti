@@ -1,8 +1,12 @@
-:root {
+body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-ul {
+body ul {
     list-style-type: none;
     padding: 0;
+}
+
+body > section:first-child {
+    width: 50%;
 }

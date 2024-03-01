@@ -15,28 +15,34 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         
         setTimeout(() => location.reload(), 200);
+    })
 
-        if (document.getElementById('controlTypeInput').value === "auto") {
+    document.getElementById("controlTypeInput").addEventListener("change", function() {
+        if (this.value === "auto") {
             window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.")
         }
-    })
-})
+        document.getElementById("controllerContainer").style.display = (this.value == "auto") ? "none" : "block";
+    });
 
-// Fetch the data
-fetch(BASE_PATH + "/api/data", {
-    method: 'GET',
-    mode: 'cors'
+    // Fetch the data
+    fetch(BASE_PATH + "/api/data", {
+        method: 'GET',
+        mode: 'cors'
+    })
+    .then(res => res.json())
+    .then((data) => {
+        plotDataHistory(data, document.getElementById('waterLevelTrend'));
+        document.getElementById('systemState').innerHTML = "State of System: " + data[0].state;
+        document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveValue;
+        document.getElementById('controlType').innerHTML = "Current Control Type: " + data[0].controlType;
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+    const type = document.getElementById("controlTypeInput").value;
+    document.getElementById("controllerContainer").style.display = (type == "auto") ? "none" : "block";
+    setTimeout(() => location.reload(), 10000);
 })
-.then(res => res.json())
-.then((data) => {
-    plotDataHistory(data, document.getElementById('waterLevelTrend'));
-    document.getElementById('systemState').innerHTML = "State of System: " + data[0].state;
-    document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveValue;
-    document.getElementById('controlType').innerHTML = "Current Control Type: " + data[0].controlType;
-})
-.catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-});
 
 const plotDataHistory = (data, ctx) => {
     const xValues = data.map(x => new Date(x.time).toLocaleString())
