@@ -10,8 +10,8 @@
     <script defer src="index.js"></script>
 </head>
 <body>
-    <h1>River Monitoring System</h1>
     <section>
+        <h1>River Monitoring System</h1>
         <ul>
             <li><canvas id="waterLevelTrend"></canvas></li>
             <li><p id="systemState">State of System:</p></li>
@@ -20,17 +20,17 @@
         </ul>
     </section>
     <section>
-        <h2>Control</h2>
-        <div id="roomControllerContainer">
-            <form id="controllerForm" method="post" action="http://localhost:3030/api/room">
-                <ul>
-                    <li>
-                        <label for="valveLevelInput">Control Type:</label>
-                        <select id="controlTypeInput">
-                            <option value="manual">Manual</option>
-                            <option value="auto">Auto</option>
-                        </select>
-                    </li>
+        <h1>Control</h1>
+        <form id="controllerForm" method="post" action="http://localhost:3030/api/room">
+            <ul>
+                <li>
+                    <label for="valveLevelInput">Control Type:</label>
+                    <select id="controlTypeInput">
+                        <option value="auto">Auto</option>
+                        <option value="manual">Manual</option>
+                    </select>
+                </li>
+                <div id="controllerContainer">
                     <li>
                         <label for="valveLevelInput">Valve Opening Level (%):</label>
                         <input type="number" id="valveLevelInput" min="0" max="100" step="1" value="50">
@@ -39,9 +39,9 @@
                         <label for="submit" hidden>Update</label>
                         <input id="submit" type="submit" value="Update"/>
                     </li>
-                </ul>
-            </form>
-        </div>
+                </div>
+            </ul>
+        </form>
     </section>
 </body>
 </html>
