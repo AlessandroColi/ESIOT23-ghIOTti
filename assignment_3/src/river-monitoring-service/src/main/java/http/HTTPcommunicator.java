@@ -32,21 +32,22 @@ public class HTTPcommunicator implements Communicator {
         .post(PORT, HOST, "/api/data")
         .sendJson(item)
         .onSuccess(response -> {
-            System.out.println("Posting - Received response with status code: " + response.statusCode());
+            //System.out.println("Posting - Received response with status code: " + response.statusCode());
 		});
     }
 
     @Override
     public Optional<Integer> check() {
+        Optional<Integer> value = Optional.empty();
         client
         .get(PORT, HOST, "/api/data")
         .send()
         .onSuccess(res -> { 
-            System.out.println("Getting - Received response with status code: " + res.statusCode());
+            //System.out.println("Getting - Received response with status code: " + res.statusCode());
             JsonArray response = res.bodyAsJsonArray();
-            System.out.println(response.encodePrettily());
+            //System.out.println(response.encodePrettily());
         })
         .onFailure(err -> System.out.println("Something went wrong " + err.getMessage()));
-        return Optional.empty();    //TODO: implementare output corretto
+        return value;
 	}
 }

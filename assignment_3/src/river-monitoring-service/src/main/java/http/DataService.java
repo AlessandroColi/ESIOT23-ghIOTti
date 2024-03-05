@@ -81,7 +81,7 @@ public class DataService extends AbstractVerticle {
 	}
 
 	private void log(String msg) {
-		System.out.println("[DATA SERVICE] "+msg);
+		//System.out.println("[DATA SERVICE] "+msg);
 	}
 
 }
