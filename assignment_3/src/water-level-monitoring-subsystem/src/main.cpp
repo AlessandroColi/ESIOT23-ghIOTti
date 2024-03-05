@@ -12,9 +12,8 @@ bool working;
 long updateFrequence = 5000;
 
 /* wifi network info */
-
-const char* ssid = "Blln";
-const char* password = "zxcvbnm.";
+const char* ssid = "";
+const char* password = "";
 
 /* MQTT server address */
 const char* mqtt_server = "broker.mqtt-dashboard.com";
@@ -23,17 +22,14 @@ const char* mqtt_server = "broker.mqtt-dashboard.com";
 const char* backend = "backend";
 const char* esp = "esp32";
 
-/* MQTT client management */
 
 /* MQTT client management */
-
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 
 unsigned long lastMsgTime = 0;
 char msg1[MSG_BUFFER_SIZE];
-
 
 TaskHandle_t Task1;
 TaskHandle_t Task2;
@@ -56,10 +52,12 @@ void setup_wifi() {
 }
 
 /* MQTT subscribing callback */
-
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.println(String("Message arrived on [") + topic + "] len: " + length );
-  //memcpy(&updateFrequence, payload, sizeof(long));
+  Serial.println(String("Message arrived on [") + topic + "] len: " + length);
+  for (size_t i = 0; i < length; ++i) {
+        updateFrequence = (updateFrequence << 8) | payload[i];
+  } 
+  Serial.println(String("Received frequency: ") + updateFrequence);
 }
 
 /* generate mqttTopic */
@@ -78,14 +76,11 @@ char* toTopics(const char* source, const char* destination) {
 
     // Construct the resulting string
     snprintf(result, length, "RiverMonitoring/%s/%s", source, destination);
-
     return result;
 }
 
 void reconnect() {
-  
   // Loop until we're reconnected
-  
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     
@@ -95,7 +90,8 @@ void reconnect() {
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.subscribe("RiverMonitoring/+/+"); //subscribe to all topics related to this project
+       //subscribe to all topics related to this project
+       client.subscribe(toTopics(backend,esp));
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -108,13 +104,12 @@ void reconnect() {
 
 
 void setup() {
-    Serial.begin(9600); 
+    Serial.begin(115200); 
     setup_wifi();
     randomSeed(micros());
     client.setServer(mqtt_server, 1883);
     client.setCallback(callback);
 
-    
     xTaskCreatePinnedToCore(tasksImpl::monitoringTask,"Task1",10000,NULL,1,&Task1,0);
     xTaskCreatePinnedToCore(tasksImpl::ledControlTask,"Task2",10000,NULL,1,&Task2,1);
 }
