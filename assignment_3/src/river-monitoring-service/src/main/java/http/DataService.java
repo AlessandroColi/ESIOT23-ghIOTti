@@ -9,14 +9,13 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.CorsHandler;
 
-import java.util.Date;
 import java.util.LinkedList;
 
 public class DataService extends AbstractVerticle {
 
 	private int port;
 	private static final int MAX_SIZE = 10;
-	private LinkedList<DataPoint> values;
+	private LinkedList<Data> values;
 	
 	public DataService(int port) {
 		values = new LinkedList<>();		
@@ -28,7 +27,7 @@ public class DataService extends AbstractVerticle {
 		Router router = Router.router(vertx);
 		router.route().handler(BodyHandler.create());
 		router.route().handler(CorsHandler.create("*"));
-		router.post("/api/data").handler(this::handlePostData);
+		router.post("/api/data").handler(this::handleAddNewData);
 		router.get("/api/data").handler(this::handleGetData);		
 		vertx
 			.createHttpServer()
@@ -38,41 +37,41 @@ public class DataService extends AbstractVerticle {
 		log("Service ready on port: " + port);
 	}
 	
-	private void handlePostData(RoutingContext routingContext) {
+	private void handleAddNewData(RoutingContext routingContext) {
 		HttpServerResponse response = routingContext.response();
 		JsonObject res = routingContext.getBodyAsJson();
 		if (res == null) {
 			sendError(400, response);
 		} else {
-			long time = System.currentTimeMillis();
-			double waterLevel = 1.0;	// TODO: per ora waterLevel è fasullo
-			int valveValue = Integer.parseInt(res.getString("valveValue"));
-			String state = res.getString("state");
 			String controlType = res.getString("controlType");
+			long time = System.currentTimeMillis();
+			double waterLevel = res.getDouble("waterLevel");
+			int valveLevel = (controlType == "auto") ? res.getInteger("valveLevel") : Integer.parseInt(res.getString("valveLevel"));
+			String state = res.getString("state");
 			
-			values.addFirst(new DataPoint(waterLevel, valveValue, time, state, controlType));
+			values.addFirst(new Data(waterLevel, valveLevel, state, time));
 			if (values.size() > MAX_SIZE) {
 				values.removeLast();
 			}
 			
-			log("New valveValue: " + valveValue + " from " + state + " on " + new Date(time));
+			log("New dataset:\n\twater level: " + waterLevel + "\n\tvalve level: " + valveLevel + "\n\tstate: " + state);
 			response.setStatusCode(200).end();
 		}
 	}
 	
 	private void handleGetData(RoutingContext routingContext) {
 		JsonArray arr = new JsonArray();
-		for (DataPoint p: values) {
+		for (Data p: values) {
 			JsonObject data = new JsonObject();
-			data.put("time", p.getTime());
-			data.put("valveValue", p.getValveValue());
+			data.put("controlType", "auto");
 			data.put("waterLevel", p.getWaterLevel());
+			data.put("valveLevel", p.getValveLevel());
 			data.put("state", p.getState());
-			data.put("controlType", p.getControlType());
+			data.put("time", p.getTime());
 			arr.add(data);
 		}
 		routingContext.response()
-			.putHeader("Content-Type", "application/json")
+			.putHeader("content-type", "application/json")
 			.end(arr.encodePrettily());
 	}
 	

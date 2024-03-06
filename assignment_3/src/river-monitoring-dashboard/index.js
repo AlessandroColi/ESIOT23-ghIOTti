@@ -4,16 +4,21 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("controllerForm").addEventListener("submit", e => {
         e.preventDefault()
 
-        const formData = new FormData()
-        formData.append("controlType", document.getElementById('controlTypeInput').value)
-        formData.append("valveValue", document.getElementById('valveLevelInput').value)
+        var data = {    //TODO: Al momento cliccando sull'invio setto il valveLevel a 0.
+            controlType: "manual",
+            valveLevel: document.getElementById('valveLevelInput').value,
+            waterLevel: 0,
+            state: "open"
+        };
+
+        console.log(JSON.stringify(data));
         
         fetch(BASE_PATH + "/api/data", {
             method: "POST",
             mode: "cors", 
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(data)
         })
-        
+
         setTimeout(() => location.reload(), 200);
     })
 
@@ -30,18 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
         mode: 'cors'
     })
     .then(res => res.json())
-    .then((data) => {
+    .then(data => {
         plotDataHistory(data, document.getElementById('waterLevelTrend'));
         document.getElementById('systemState').innerHTML = "State of System: " + data[0].state;
-        document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveValue;
-        document.getElementById('controlType').innerHTML = "Current Control Type: " + data[0].controlType;
+        document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveLevel;
+        console.log(data);
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
     });
     const type = document.getElementById("controlTypeInput").value;
     document.getElementById("controllerContainer").style.display = (type == "auto") ? "none" : "block";
-    setTimeout(() => location.reload(), 10000);
+setTimeout(() => location.reload(), 10000);
 })
 
 const plotDataHistory = (data, ctx) => {

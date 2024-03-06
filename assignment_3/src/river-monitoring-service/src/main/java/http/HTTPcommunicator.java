@@ -16,24 +16,24 @@ public class HTTPcommunicator implements Communicator {
     public HTTPcommunicator() {
         this.vertx = Vertx.vertx();
         client = WebClient.create(vertx);
-		DataService service = new DataService(PORT);
-		vertx.deployVerticle(service);
+        DataService service = new DataService(PORT);
+        vertx.deployVerticle(service);
     }
 
     @Override
-    public void write(double waterLevel, int gateLevel, String state) {
+    public void write(double waterLevel, int valveLevel, String state) {
         JsonObject item = new JsonObject();
-		item.put("waterLevel", waterLevel);
-        item.put("valveValue", gateLevel);
+        item.put("waterLevel", waterLevel);
+        item.put("valveLevel", valveLevel);
         item.put("state", state);
         item.put("controlType", "auto");
 
-		client
+        client
         .post(PORT, HOST, "/api/data")
         .sendJson(item)
         .onSuccess(response -> {
             //System.out.println("Posting - Received response with status code: " + response.statusCode());
-		});
+        });
     }
 
     @Override
@@ -45,9 +45,10 @@ public class HTTPcommunicator implements Communicator {
         .onSuccess(res -> { 
             //System.out.println("Getting - Received response with status code: " + res.statusCode());
             JsonArray response = res.bodyAsJsonArray();
-            //System.out.println(response.encodePrettily());
+            System.out.println(response.encodePrettily());
         })
         .onFailure(err -> System.out.println("Something went wrong " + err.getMessage()));
-        return value;
-	}
+        return value;   //TODO
+    }
 }
+
