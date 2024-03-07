@@ -49,12 +49,12 @@ public class DataService extends AbstractVerticle {
 			int valveLevel = (controlType == "auto") ? res.getInteger("valveLevel") : Integer.parseInt(res.getString("valveLevel"));
 			String state = res.getString("state");
 			
-			values.addFirst(new Data(waterLevel, valveLevel, state, time));
+			values.addFirst(new Data(waterLevel, valveLevel, state, time, controlType));
 			if (values.size() > MAX_SIZE) {
 				values.removeLast();
 			}
 			
-			log("New dataset:\n\twater level: " + waterLevel + "\n\tvalve level: " + valveLevel + "\n\tstate: " + state);
+			log("New dataset [control type: " + controlType + ", valve level: " + valveLevel + "]");
 			response.setStatusCode(200).end();
 		}
 	}
@@ -63,7 +63,7 @@ public class DataService extends AbstractVerticle {
 		JsonArray arr = new JsonArray();
 		for (Data p: values) {
 			JsonObject data = new JsonObject();
-			data.put("controlType", "auto");
+			data.put("controlType", p.getControlType());
 			data.put("waterLevel", p.getWaterLevel());
 			data.put("valveLevel", p.getValveLevel());
 			data.put("state", p.getState());
@@ -80,7 +80,7 @@ public class DataService extends AbstractVerticle {
 	}
 
 	private void log(String msg) {
-		//System.out.println("[DATA SERVICE] "+msg);
+		System.out.println("[SERVICE] "+msg);
 	}
 
 }
