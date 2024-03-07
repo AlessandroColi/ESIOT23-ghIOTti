@@ -24,7 +24,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("controlTypeInput").addEventListener("change", function() {
         if (this.value === "auto") {
-            window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.")
+            window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.");
+            var data = {
+                controlType: "manual",
+                valveLevel: -1,
+                waterLevel: 0,
+                state: "switch"
+            };
+            console.log(JSON.stringify(data));
+
+            fetch(BASE_PATH + "/api/data", {
+                method: "POST",
+                mode: "cors", 
+                body: JSON.stringify(data)
+            })
         }
         document.getElementById("controllerContainer").style.display = (this.value == "auto") ? "none" : "block";
     });
