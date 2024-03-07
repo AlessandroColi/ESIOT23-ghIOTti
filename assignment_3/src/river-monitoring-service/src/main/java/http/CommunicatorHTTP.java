@@ -27,7 +27,7 @@ public class CommunicatorHTTP implements Communicator {
         item.put("waterLevel", waterLevel);
         item.put("valveLevel", valveLevel);
         item.put("state", state);
-        item.put("controlType", "auto");
+        item.put("controlType", "DATA");
 
         client
         .post(PORT, HOST, "/api/data")
@@ -47,10 +47,8 @@ public class CommunicatorHTTP implements Communicator {
             JsonArray response = res.bodyAsJsonArray();
             if (!response.isEmpty()) {
                 JsonObject jsonObject = response.getJsonObject(0);
-                int valveLevel = jsonObject.getInteger("valveLevel");
-                if (jsonObject.getString("controlType").equals("manual")
-                        && valveLevel < 100 && valveLevel > 0) {
-                    value.set(Optional.of(valveLevel));
+                if (jsonObject.getString("controlType").equals("SET")) {
+                    value.set(Optional.of(jsonObject.getInteger("valveLevel")));
                 }
             }
         })

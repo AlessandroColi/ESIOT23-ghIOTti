@@ -46,11 +46,11 @@ public class DataService extends AbstractVerticle {
 			String controlType = res.getString("controlType");
 			long time = System.currentTimeMillis();
 			double waterLevel = res.getDouble("waterLevel");
-			int valveLevel = (controlType == "auto") ? res.getInteger("valveLevel") : Integer.parseInt(res.getString("valveLevel"));
+			int valveLevel = (controlType == "DATA") ? res.getInteger("valveLevel") : Integer.parseInt(res.getString("valveLevel"));
 			String state = res.getString("state");
 			
 			values.addFirst(new Data(waterLevel, valveLevel, state, time, controlType));
-			if (values.size() > MAX_SIZE) {
+			if (values.stream().filter(x -> x.getControlType() == "DATA").count() > MAX_SIZE) {
 				values.removeLast();
 			}
 			
