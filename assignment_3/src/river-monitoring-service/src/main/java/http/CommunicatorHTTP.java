@@ -8,13 +8,13 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 
-public class HTTPcommunicator implements Communicator {
+public class CommunicatorHTTP implements Communicator {
     private static final int PORT = 8080;
     private static final String HOST = "localhost";
     private final Vertx vertx;
     private final WebClient client;
 
-    public HTTPcommunicator() {
+    public CommunicatorHTTP() {
         this.vertx = Vertx.vertx();
         client = WebClient.create(vertx);
         DataService service = new DataService(PORT);
