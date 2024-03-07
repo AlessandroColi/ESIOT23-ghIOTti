@@ -1,6 +1,7 @@
 package http;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
@@ -32,23 +33,35 @@ public class HTTPcommunicator implements Communicator {
         .post(PORT, HOST, "/api/data")
         .sendJson(item)
         .onSuccess(response -> {
-            //System.out.println("Posting - Received response with status code: " + response.statusCode());
+            System.out.println("Posting - Received response with status code: " + response.statusCode());
         });
     }
 
     @Override
     public Optional<Integer> check() {
-        Optional<Integer> value = Optional.empty();
+        AtomicReference<Optional<Integer>> value = new AtomicReference<>(Optional.empty());
         client
         .get(PORT, HOST, "/api/data")
         .send()
         .onSuccess(res -> { 
-            //System.out.println("Getting - Received response with status code: " + res.statusCode());
             JsonArray response = res.bodyAsJsonArray();
-            System.out.println(response.encodePrettily());
+            if (!response.isEmpty()) {
+                JsonObject jsonObject = response.getJsonObject(0);
+                int valveLevel = jsonObject.getInteger("valveLevel");
+                if (jsonObject.getString("controlType").equals("manual")
+                        && valveLevel < 100 && valveLevel > 0) {
+                    value.set(Optional.of(valveLevel));
+                }
+            }
         })
         .onFailure(err -> System.out.println("Something went wrong " + err.getMessage()));
-        return value;   //TODO
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Optional<Integer> result = value.get();
+        return result;
     }
 }
 
