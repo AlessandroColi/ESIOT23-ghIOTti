@@ -33,7 +33,7 @@ public class CommunicatorHTTP implements Communicator {
         .post(PORT, HOST, "/api/data")
         .sendJson(item)
         .onSuccess(response -> {
-            System.out.println("Posting - Received response with status code: " + response.statusCode());
+            System.out.println("[COMMUNICATOR] Posting - Received response with status code: " + response.statusCode());
         });
     }
 
@@ -52,9 +52,9 @@ public class CommunicatorHTTP implements Communicator {
                 }
             }
         })
-        .onFailure(err -> System.out.println("Something went wrong " + err.getMessage()));
+        .onFailure(err -> System.out.println("[COMMUNICATOR] Something went wrong " + err.getMessage()));
         try {
-            Thread.sleep(200);
+            Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
