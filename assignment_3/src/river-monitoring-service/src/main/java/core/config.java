@@ -8,10 +8,10 @@ public class config{
     public static final int L2 = 50;  //valve opening level for ALARM-TOO-HIGH state
     public static final int L3 = 100; //valve opening level for ALARM-TOO-HIGH-CRITIC state
 
-    public static final double WL1 = 0.2;  //lower water level for normal state
-    public static final double WL2 = 0.3;  //upper water level for normal state
-    public static final double WL3 = 0.4;  //PRE-ALARM-TOO-HIGH state water level
-    public static final double WL4 = 0.5;  //ALARM-TOO-HIGH state water level
+    public static final double WL1 = 0.25;  //lower water level for normal state
+    public static final double WL2 = 0.35;  //upper water level for normal state
+    public static final double WL3 = 0.45;  //PRE-ALARM-TOO-HIGH state water level
+    public static final double WL4 = 0.55;  //ALARM-TOO-HIGH state water level
 
     public enum State{
         ALARM_TOO_LOW(L0,F2,"ALARM_TOO_LOW"),

@@ -93,7 +93,6 @@ public class RiverMonitoringService {
 
     private Optional<Integer> getDashboardLevel() {
         Optional<Integer> val =  dashboardComm.check();
-        //System.out.println(val);
         return val;
     }
 

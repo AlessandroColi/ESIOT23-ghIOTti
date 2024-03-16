@@ -12,8 +12,8 @@ bool working;
 long updateFrequence = 5000;
 
 /* wifi network info */
-const char* ssid = "NTGR0005";
-const char* password = "35914132";
+const char* ssid = "";
+const char* password = "";
 
 /* MQTT server address */
 const char* mqtt_server = "broker.mqtt-dashboard.com";

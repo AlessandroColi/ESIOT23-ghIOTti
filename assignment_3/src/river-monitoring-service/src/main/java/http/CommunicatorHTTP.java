@@ -44,7 +44,10 @@ public class CommunicatorHTTP implements Communicator {
         .get(PORT, HOST, "/api/data")
         .send()
         .onSuccess(res -> { 
-            JsonArray response = res.bodyAsJsonArray();
+            JsonArray response = res.bodyAsJsonArray().stream()
+            .filter(el -> !((JsonObject)el).getString("controlType").equals("DATA"))
+            .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+            System.out.println(response);
             if (!response.isEmpty()) {
                 JsonObject jsonObject = response.getJsonObject(0);
                 if (jsonObject.getString("controlType").equals("SET")) {
