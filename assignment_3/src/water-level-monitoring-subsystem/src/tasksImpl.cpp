@@ -5,7 +5,7 @@ void tasksImpl::monitoringTask(void* parameter) {
 
   for(;;) {
       waterLevel = pSonar->getDistance();
-      delay(100);
+      delay(updateFrequence);
     }
 }
 

@@ -1,13 +1,7 @@
 package mqtt;
 
 import org.eclipse.paho.client.mqttv3.*;
-import org.eclipse.paho.client.mqttv3.IMqttToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-
 
 import util.Pair;
 
@@ -18,7 +12,7 @@ import java.util.concurrent.SubmissionPublisher;
 
 public class MqttProtocol {
 
-    private final String host = "test.mosquitto.org";
+    private final String host = "broker.mqtt-dashboard.com";
     private final int port = 1883;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();

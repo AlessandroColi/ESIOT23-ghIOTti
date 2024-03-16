@@ -16,7 +16,7 @@ public class RiverMonitoringService {
     private final static String backend = "backend";
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
-    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM6",9600);
+    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM9",9600);
     private final Communicator dashboardComm = new HTTPcommunicator();
     private final stateControl state = new stateControl();
     private double waterLevel = 0.0;
