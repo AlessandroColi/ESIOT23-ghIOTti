@@ -13,12 +13,14 @@ public class CommunicatorHTTP implements Communicator {
     private static final String HOST = "localhost";
     private final Vertx vertx;
     private final WebClient client;
+    private boolean isAuto;
 
     public CommunicatorHTTP() {
         this.vertx = Vertx.vertx();
         client = WebClient.create(vertx);
         DataService service = new DataService(PORT);
         vertx.deployVerticle(service);
+        this.isAuto = false;
     }
 
     @Override
@@ -52,6 +54,8 @@ public class CommunicatorHTTP implements Communicator {
                 JsonObject jsonObject = response.getJsonObject(0);
                 if (jsonObject.getString("controlType").equals("SET")) {
                     value.set(Optional.of(jsonObject.getInteger("valveLevel")));
+                } else if (jsonObject.getString("controlType").equals("SWITCH_TO_AUTO")) {
+                    value.set(Optional.of(-1));
                 }
             }
         })
@@ -62,7 +66,10 @@ public class CommunicatorHTTP implements Communicator {
             e.printStackTrace();
         }
         Optional<Integer> result = value.get();
-        return result;
+        if (!result.isPresent()) {
+            this.isAuto = (result.get() == -1) ? false : true;
+        }
+        return isAuto ? Optional.empty() : result;
     }
 }
 

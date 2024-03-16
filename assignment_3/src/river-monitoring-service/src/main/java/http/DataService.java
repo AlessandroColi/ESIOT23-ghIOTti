@@ -50,7 +50,7 @@ public class DataService extends AbstractVerticle {
 			String state = res.getString("state");
 			
 			values.addFirst(new Data(waterLevel, valveLevel, state, time, controlType));
-			if (values.stream().filter(x -> x.getControlType().equals("DATA")).count() > MAX_SIZE) {
+			while (values.stream().filter(x -> x.getControlType().equals("DATA")).count() > MAX_SIZE) {
 				values.removeLast();
 			}
 			
