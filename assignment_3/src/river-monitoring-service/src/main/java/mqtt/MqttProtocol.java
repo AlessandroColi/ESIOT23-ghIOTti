@@ -3,8 +3,10 @@ package mqtt;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+
 import util.Pair;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +14,7 @@ import java.util.concurrent.SubmissionPublisher;
 
 public class MqttProtocol {
 
+    private final String host = "broker.mqtt-dashboard.com";
     private final String host = "broker.mqtt-dashboard.com";
     private final int port = 1883;
 
@@ -31,9 +34,7 @@ public class MqttProtocol {
 
     public void setupChannel(String source, String destination) {
         registeredTopics.put(new Pair<>(source, destination), toTopics(source, destination));
-        registeredTopics.put(new Pair<>(destination, source), toTopics(destination, source));
         topicChannels.put(toTopics(source, destination), new SubmissionPublisher<>());
-        topicChannels.put(toTopics(destination, source), new SubmissionPublisher<>());
     }
 
     public void writeToChannel(String from, String to, byte[] message) throws ProtocolError {
@@ -44,7 +45,7 @@ public class MqttProtocol {
         }
 
         MqttMessage mqttMessage = new MqttMessage(message);
-        mqttMessage.setQos(2);
+        mqttMessage.setQos(0);
 
         executorService.submit(() -> {
             try {
@@ -62,7 +63,7 @@ public class MqttProtocol {
 
             executorService.submit(() -> {
                 try {
-                    IMqttToken token = mqttClient.connect(createConnectionOptions());
+                    IMqttToken token = mqttClient.connect();
                     token.waitForCompletion();
 
                     MqttCallback callback = new MqttCallback() {
@@ -89,7 +90,7 @@ public class MqttProtocol {
                     };
 
                     mqttClient.setCallback(callback);
-                    mqttClient.subscribe(new String[]{"RiverMonitoring/+/+"}, new int[]{1}).waitForCompletion();
+                    mqttClient.subscribe(new String[]{"RiverMonitoring/+/+"}, new int[]{0}).waitForCompletion();
                 } catch (MqttException e) {
                     throw new RuntimeException(new ProtocolError.ProtocolException(e));
                 }
@@ -113,12 +114,6 @@ public class MqttProtocol {
 
     private String toTopics(String source, String destination) {
         return "RiverMonitoring/" + source + "/" + destination;
-    }
-
-    private MqttConnectOptions createConnectionOptions() {
-        MqttConnectOptions options = new MqttConnectOptions();
-        options.setCleanSession(false);  // Equivalent to setCleanStart(false) in MQTT v5
-        return options;
     }
 
     private static <T> void requireNotNull(T value) {

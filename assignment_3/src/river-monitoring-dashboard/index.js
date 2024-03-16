@@ -3,23 +3,14 @@ const BASE_PATH = "http://localhost:8080"
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("controllerForm").addEventListener("submit", e => {
         e.preventDefault()
-
-        const formData = new FormData()
-        formData.append("controlType", document.getElementById('controlTypeInput').value)
-        formData.append("valveValue", document.getElementById('valveLevelInput').value)
-        
-        fetch(BASE_PATH + "/api/data", {
-            method: "POST",
-            mode: "cors", 
-            body: JSON.stringify(Object.fromEntries(formData))
-        })
-        
+        sendData("SET", document.getElementById("valveLevelInput").value, -1, "")
         setTimeout(() => location.reload(), 200);
     })
 
     document.getElementById("controlTypeInput").addEventListener("change", function() {
         if (this.value === "auto") {
-            window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.")
+            window.alert("You have successfully changed the control type to automatic. The system will now be controlled by the water level sensor.");
+            sendData("SWITCH_TO_AUTO", -1, -1, "");
         }
         document.getElementById("controllerContainer").style.display = (this.value == "auto") ? "none" : "block";
     });
@@ -30,17 +21,16 @@ document.addEventListener("DOMContentLoaded", () => {
         mode: 'cors'
     })
     .then(res => res.json())
-    .then((data) => {
+    .then(data => data.filter(el => el.controlType == "DATA"))
+    .then(data => {
         plotDataHistory(data, document.getElementById('waterLevelTrend'));
         document.getElementById('systemState').innerHTML = "State of System: " + data[0].state;
-        document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveValue;
-        document.getElementById('controlType').innerHTML = "Current Control Type: " + data[0].controlType;
+        document.getElementById('valveValue').innerHTML = "Valve Opening Level: " + data[0].valveLevel;
     })
     .catch(error => {
         console.error('There was a problem with the fetch operation:', error);
     });
-    const type = document.getElementById("controlTypeInput").value;
-    document.getElementById("controllerContainer").style.display = (type == "auto") ? "none" : "block";
+    document.getElementById("controllerContainer").style.display = (document.getElementById("controlTypeInput").value == "auto") ? "none" : "block";
     setTimeout(() => location.reload(), 10000);
 })
 
@@ -66,4 +56,19 @@ const plotDataHistory = (data, ctx) => {
             },
         }
     });
+}
+
+function sendData(controlType, valveLevel, waterLevel, state) {
+    var data = {
+        controlType: controlType,
+        valveLevel: valveLevel,
+        waterLevel: waterLevel,
+        state: state
+    };
+    
+    fetch(BASE_PATH + "/api/data", {
+        method: "POST",
+        mode: "cors", 
+        body: JSON.stringify(data)
+    })
 }

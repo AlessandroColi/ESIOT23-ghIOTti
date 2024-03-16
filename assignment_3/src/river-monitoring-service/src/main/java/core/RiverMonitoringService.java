@@ -5,6 +5,8 @@ import serial.*;
 import http.*;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Executors;
@@ -16,8 +18,8 @@ public class RiverMonitoringService {
     private final static String backend = "backend";
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
-    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM9",9600);
-    private final Communicator dashboardComm = new HTTPcommunicator();
+    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM6",9600);
+    private final Communicator dashboardComm = new CommunicatorHTTP();
     private final stateControl state = new stateControl();
     private double waterLevel = 0.0;
     private boolean arduino_manual = false;
@@ -31,16 +33,35 @@ public class RiverMonitoringService {
     public void run() {
         espComm.initialize();
         espComm.setupChannel(backend, esp);
+        espComm.setupChannel(esp, backend);
+
         espComm.readFromChannel(esp, backend).subscribe(new Flow.Subscriber<byte[]>() {
                     @Override
                     public void onSubscribe(Flow.Subscription subscription){
+                        subscription.request(Long.MAX_VALUE); // Request all available messages
                     }
 
                     @Override
                     public void onNext(byte[] level) {
-                        // Process the received message
-                        waterLevel = ByteBuffer.wrap(level).getDouble();
-                        state.updateLevel(waterLevel);
+                        // Convert bytes to hexadecimal string
+                        StringBuilder hexStringBuilder = new StringBuilder();
+                        for (byte b : level) {
+                            hexStringBuilder.append(String.format("%02X", b));
+                        }
+                        String hexString = hexStringBuilder.toString();
+
+                        // Convert hexadecimal string to ASCII
+                        StringBuilder asciiStringBuilder = new StringBuilder();
+                        for (int i = 0; i < hexString.length(); i += 2) {
+                            String str = hexString.substring(i, i + 2);
+                            asciiStringBuilder.append((char) Integer.parseInt(str, 16));
+                        }
+                        String asciiString = asciiStringBuilder.toString();
+
+                        // Convert ASCII string to double
+                        double wl = Double.parseDouble(asciiString.trim());
+                        state.updateLevel(wl);
+                        waterLevel = wl;
                     }
 
                     @Override
@@ -71,7 +92,9 @@ public class RiverMonitoringService {
     }
 
     private Optional<Integer> getDashboardLevel() {
-        return dashboardComm.check();
+        Optional<Integer> val =  dashboardComm.check();
+        //System.out.println(val);
+        return val;
     }
 
     private Optional<Integer> getArduinoLevel() {
@@ -81,7 +104,6 @@ public class RiverMonitoringService {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("ard : "+ arduino);
         if(arduino_manual){
             if ( arduino.isPresent() && arduino.get().equals("AUTO")) {
                 arduino_manual = false;
