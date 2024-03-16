@@ -5,8 +5,6 @@ import serial.*;
 import http.*;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.Flow;
 import java.util.concurrent.Executors;
@@ -18,7 +16,7 @@ public class RiverMonitoringService {
     private final static String backend = "backend";
     private final static String esp = "esp32";
     private final MqttProtocol espComm = new MqttProtocol();
-    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM6",9600);
+    private final SerialCommunicator arduinoComm = new  SerialCommunicatorImpl("COM9",9600);
     private final Communicator dashboardComm = new CommunicatorHTTP();
     private final stateControl state = new stateControl();
     private double waterLevel = 0.0;
@@ -60,8 +58,10 @@ public class RiverMonitoringService {
 
                         // Convert ASCII string to double
                         double wl = Double.parseDouble(asciiString.trim());
-                        state.updateLevel(wl);
-                        waterLevel = wl;
+                        if(wl > 0){
+                            state.updateLevel(wl);
+                            waterLevel = wl;
+                        }
                     }
 
                     @Override
@@ -129,7 +129,7 @@ public class RiverMonitoringService {
     }
 
     private void updateDashboard(String state, double waterLevel, int gateLevel) {
-        //TODO rivedere dopo iml di http
+        //TODO rivedere dopo impl di http
         dashboardComm.write(waterLevel,gateLevel,state);
     }
 

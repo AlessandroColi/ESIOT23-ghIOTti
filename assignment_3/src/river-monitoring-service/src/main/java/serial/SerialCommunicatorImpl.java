@@ -1,7 +1,6 @@
 package serial;
 
 import java.util.Optional;
-import java.util.concurrent.*;
 import jssc.*;
 
 public class SerialCommunicatorImpl implements SerialCommunicator, SerialPortEventListener {
