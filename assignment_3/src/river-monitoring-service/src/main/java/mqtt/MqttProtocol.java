@@ -15,7 +15,6 @@ import java.util.concurrent.SubmissionPublisher;
 public class MqttProtocol {
 
     private final String host = "broker.mqtt-dashboard.com";
-    private final String host = "broker.mqtt-dashboard.com";
     private final int port = 1883;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
