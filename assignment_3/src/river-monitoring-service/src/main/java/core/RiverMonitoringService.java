@@ -128,7 +128,6 @@ public class RiverMonitoringService {
     }
 
     private void updateDashboard(String state, double waterLevel, int gateLevel) {
-        //TODO rivedere dopo impl di http
         dashboardComm.write(waterLevel,gateLevel,state);
     }
 
